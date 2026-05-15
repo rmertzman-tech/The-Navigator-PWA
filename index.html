@@ -3,8 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — Twin v3.1.4 Pulse Stabilization</title>
-  <meta name="description" content="Navigator Twin v3.1.4 — Pulse Click Handler Patch adds a seven-signal daily check-in with Beauty/Awe/Meaning, trend memory, ABCD thought, and Twin integration; no service worker in this stable fallback build." />
+  <title>The Navigator — PWA-1 Mobile Companion</title>
+  <meta name="description" content="Navigator PWA-1 — Installable Mobile Companion Build adds manifest, service worker, icons, offline app-shell caching, and a phone-friendly Daily Coherence Pulse while preserving the local-first Navigator Twin core." />
+  <meta name="theme-color" content="#0D5E57" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Navigator" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-180.png" />
   <style>
     :root {
       --void: #060b18;
@@ -763,13 +770,14 @@
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator Twin v3.1.4 · Pulse Stabilization</div>
+        <div class="eyebrow">Navigator PWA-1 · Installable Mobile Companion</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
-        <div class="subtitle">This build stabilizes the Daily Coherence Pulse as a friendly phone-ready entry point: seven quick signals, Beauty/Awe/Meaning included, plus clearer Home visibility, history controls, and Twin integration while keeping the Twin Conversation as the central coherence engine.</div>
+        <div class="subtitle">This build makes Navigator installable as a mobile companion while preserving the local-first Twin core: seven-signal Daily Coherence Pulse, Home visibility, offline app-shell caching, and backend calls only when the user explicitly asks for AI help.</div>
       </div>
       <div class="status-cluster">
         <span class="pill"><span id="backend-dot" class="dot wait"></span><span id="backend-label">Backend not tested</span></span>
         <button class="btn small ghost" type="button" onclick="testBackendConnection()">Test connection</button>
+        <span class="pill"><span id="pwa-dot" class="dot wait"></span><span id="pwa-label">PWA starting</span></span>
         <button class="btn small ghost" type="button" onclick="openHelpPanel()">Help / Quick Start</button>
         <button class="btn small purple" type="button" onclick="openReleaseNotes()">About / Release</button>
         <span class="pill"><span class="dot ok"></span><span id="save-label">Saved locally</span></span>
@@ -1403,8 +1411,8 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator Twin v3.1.4 — Pulse Click Handler Patch</div>
-            <div class="card-desc">This build preserves the complete agency-navigation loop and stabilizes the Daily Coherence Pulse as a phone-friendly daily entry point: seven local check-ins, Beauty/Awe/Meaning included, Home visibility, ABCD thought, clearer history controls, and Twin integration. It remains a non-PWA fallback build for safe testing without service-worker caching.</div>
+            <div class="card-title">Navigator PWA-1 — Installable Mobile Companion Build</div>
+            <div class="card-desc">This build preserves the complete agency-navigation loop and adds the first installable PWA layer: manifest, icons, service worker, offline app-shell caching, phone-friendly Daily Coherence Pulse, and explicit rules that backend AI calls are never cached. It is intended for the separate PWA repo after v3.1.4 has been confirmed as a working non-PWA baseline.</div>
           </div>
           <div class="card-body">
             <div class="help-section">
@@ -1430,7 +1438,7 @@
                 <li>It does not diagnose, treat, grade, command, or replace professional advice.</li>
                 <li>It does not decide who the user is or what the user must do.</li>
                 <li>It does not store raw uploaded documents after a Document Capsule is created.</li>
-                <li>It does not register a service worker in this stable fallback build.</li>
+                <li>It does not cache backend AI calls, API responses, or raw uploaded document text.</li>
               </ul>
             </div>
             <div class="help-section">
@@ -1447,7 +1455,7 @@
             <div class="help-section">
               <h3>Near-term roadmap after this stable demo</h3>
               <ul>
-                <li><strong>PWA conversion:</strong> installable app shell with careful service-worker caching.</li>
+                <li><strong>PWA testing:</strong> confirm install behavior, update behavior, offline app-shell behavior, and phone/laptop layout separately.</li>
                 <li><strong>Navigator Private API specification:</strong> dedicated privacy-minimizing endpoints for Twin, Capsules, Field Maps, Move Cards, and Coaches.</li>
                 <li><strong>PRF-22 profile integration:</strong> next refinements can make Field Scans and Move Cards more explicitly PRF-aware without turning the profile into a deterministic verdict.</li>
                 <li><strong>Applications & Coaches:</strong> optional guided modules such as AAC&amp;U Critical Thinking Coach, Ethical Reasoning Coach, EBB Chapter Coaches, and Research Project Coach.</li>
@@ -1456,13 +1464,13 @@
             </div>
 
             <div class="help-section">
-              <h3>PWA readiness checklist</h3>
+              <h3>PWA behavior and safety checklist</h3>
               <ul>
-                <li>Cache the app shell only after the stable fallback file is confirmed.</li>
+                <li>This PWA caches only the app shell: index, manifest, service worker, and icons.</li>
                 <li>Do not cache backend AI calls or API responses.</li>
                 <li>Do not cache raw uploaded document text.</li>
                 <li>Keep JSON export/import visible and working before and after PWA conversion.</li>
-                <li>Version the service worker carefully so old code does not trap users during active development.</li>
+                <li>The service worker is versioned. When a new version is deployed, reload after activation if the browser prompts or shows stale behavior.</li>
                 <li>Test phone and laptop layouts separately: phone for capture/continuity, laptop for deep review and planning.</li>
                 <li>Keep optional encrypted sync as a later goal, not part of this stable local-first build.</li>
               </ul>
@@ -1539,7 +1547,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">Stable fallback build: this version does not register a service worker and does not include PWA caching. Version: Navigator Twin v3.1.4 — Pulse Click Handler Patch Shell.</div>
+            <div class="privacy-note">Stable fallback build: this version does not register a service worker and does not include PWA caching. Version: Navigator PWA-1 — Installable Mobile Companion Build Shell.</div>
           </div>
         </div>
         </aside>
@@ -1553,9 +1561,9 @@
 (function(){
   'use strict';
 
-  const ENABLE_PWA = false; // Core development build: keep false until Twin v2 is stable.
+  const ENABLE_PWA = true; // PWA-1 installable build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator Twin v3.1.4 — Pulse Click Handler Patch Build';
+  const APP_VERSION = 'Navigator PWA-1 — Installable Mobile Companion Build Build';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -5153,10 +5161,54 @@ Return only valid JSON with this shape:
   }
   window.clearTwinMemory = clearTwinMemory;
 
-  if(ENABLE_PWA && 'serviceWorker' in navigator){
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  function setPwaStatus(kind, label){
+    const dot = document.getElementById('pwa-dot');
+    const lab = document.getElementById('pwa-label');
+    if(dot){ dot.className = 'dot ' + (kind || 'wait'); }
+    if(lab){ lab.textContent = label || 'PWA ready'; }
   }
 
+  async function registerNavigatorPwa(){
+    if(!ENABLE_PWA){ setPwaStatus('wait', 'PWA off'); return; }
+    if(!('serviceWorker' in navigator)){ setPwaStatus('bad', 'PWA unsupported'); return; }
+    try{
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      setPwaStatus('ok', 'PWA installable');
+      if(reg.waiting){ setPwaStatus('wait', 'PWA update ready'); }
+      reg.addEventListener('updatefound', () => {
+        const worker = reg.installing;
+        if(!worker) return;
+        worker.addEventListener('statechange', () => {
+          if(worker.state === 'installed' && navigator.serviceWorker.controller){
+            setPwaStatus('wait', 'PWA update ready');
+          }
+        });
+      });
+    } catch(e){
+      setPwaStatus('bad', 'PWA registration failed');
+    }
+  }
+
+  async function clearPwaCache(){
+    if(!confirm('Clear cached PWA files and unregister service workers for this Navigator app? Your local Navigator memory is stored separately and should remain, but export JSON first if you want a backup.')) return;
+    try{
+      if('serviceWorker' in navigator){
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if('caches' in window){
+        const names = await caches.keys();
+        await Promise.all(names.filter(n => n.indexOf('navigator-') === 0).map(n => caches.delete(n)));
+      }
+      setPwaStatus('wait', 'PWA cache cleared');
+      alert('PWA cache cleared. Reload the page to fetch the newest files.');
+    } catch(e){
+      alert('Could not fully clear PWA cache: ' + e.message);
+    }
+  }
+  window.clearPwaCache = clearPwaCache;
+
+  registerNavigatorPwa();
   renderAll();
 })();
 </script>
