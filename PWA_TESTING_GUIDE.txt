@@ -1,0 +1,23 @@
+Navigator PWA-1 Testing Guide
+
+1. Deploy the ZIP contents to the PWA repo root.
+2. Open the GitHub Pages URL.
+3. Confirm Home loads and all main tabs respond: Home, Twin, Pulse, Memory, Field Map, Moves, Coaches, Help.
+4. Confirm the top bar says PWA installable or equivalent.
+5. Run a Daily Coherence Pulse and save it.
+6. Confirm Pulse history updates and appears on Home.
+7. Test backend connection.
+8. Ask Twin About Today and confirm the backend call still works online.
+9. Export JSON.
+10. Import JSON and confirm Pulse, PRF, Coach Notes, Move Cards, and Field Scans restore.
+11. On phone, use browser install/add-to-home-screen.
+12. Launch from home screen and confirm it opens in standalone mode.
+13. Turn off network temporarily and confirm the app shell opens offline.
+14. Turn network back on and confirm backend calls still require online access.
+15. In Help/Settings, test Clear PWA cache / unregister service worker only after exporting JSON.
+
+Expected behavior:
+- Offline app shell should open.
+- Local memory should remain available in the same browser/profile.
+- Backend AI calls should not work offline and should not be cached.
+- Raw uploaded document text should not be cached by the service worker.
