@@ -1,0 +1,34 @@
+Navigator PWA-1 Release Notes
+
+Version: Navigator PWA-1 — Installable Mobile Companion Build
+Base: Navigator Twin v3.1.4 — Pulse Click Handler Patch
+
+Adds:
+- manifest.json
+- sw.js
+- PWA icons
+- installable app shell
+- offline shell caching
+- PWA status indicator
+- PWA cache/service-worker clearing control
+- updated privacy and release language
+
+Preserves:
+- Twin conversation
+- Daily Coherence Pulse
+- PRF-22 import
+- Document Capsules
+- Field Scans
+- Field Map Dashboard
+- Context Assembly
+- Move Cards
+- Cross-Field Move Comparison
+- Current Move Plan
+- Applications & Coaches
+- JSON/TXT export/import
+
+PWA safety rules:
+- cache app shell only
+- never cache backend AI/API responses
+- never cache raw uploaded documents
+- keep local-first memory and JSON backup controls visible
