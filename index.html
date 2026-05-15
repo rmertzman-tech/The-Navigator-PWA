@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — Twin v3.1.3 Pulse Stabilization</title>
-  <meta name="description" content="Navigator Twin v3.1.3 — Pulse Stabilization and Mobile Home Polish adds a seven-signal daily check-in with Beauty/Awe/Meaning, trend memory, ABCD thought, and Twin integration; no service worker in this stable fallback build." />
+  <title>The Navigator — Twin v3.1.4 Pulse Stabilization</title>
+  <meta name="description" content="Navigator Twin v3.1.4 — Pulse Click Handler Patch adds a seven-signal daily check-in with Beauty/Awe/Meaning, trend memory, ABCD thought, and Twin integration; no service worker in this stable fallback build." />
   <style>
     :root {
       --void: #060b18;
@@ -763,7 +763,7 @@
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator Twin v3.1.3 · Pulse Stabilization</div>
+        <div class="eyebrow">Navigator Twin v3.1.4 · Pulse Stabilization</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
         <div class="subtitle">This build stabilizes the Daily Coherence Pulse as a friendly phone-ready entry point: seven quick signals, Beauty/Awe/Meaning included, plus clearer Home visibility, history controls, and Twin integration while keeping the Twin Conversation as the central coherence engine.</div>
       </div>
@@ -1403,7 +1403,7 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator Twin v3.1.3 — Pulse Stabilization and Mobile Home Polish</div>
+            <div class="card-title">Navigator Twin v3.1.4 — Pulse Click Handler Patch</div>
             <div class="card-desc">This build preserves the complete agency-navigation loop and stabilizes the Daily Coherence Pulse as a phone-friendly daily entry point: seven local check-ins, Beauty/Awe/Meaning included, Home visibility, ABCD thought, clearer history controls, and Twin integration. It remains a non-PWA fallback build for safe testing without service-worker caching.</div>
           </div>
           <div class="card-body">
@@ -1539,7 +1539,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">Stable fallback build: this version does not register a service worker and does not include PWA caching. Version: Navigator Twin v3.1.3 — Pulse Stabilization and Mobile Home Polish Shell.</div>
+            <div class="privacy-note">Stable fallback build: this version does not register a service worker and does not include PWA caching. Version: Navigator Twin v3.1.4 — Pulse Click Handler Patch Shell.</div>
           </div>
         </div>
         </aside>
@@ -1555,7 +1555,7 @@
 
   const ENABLE_PWA = false; // Core development build: keep false until Twin v2 is stable.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator Twin v3.1.3 — Pulse Stabilization and Mobile Home Polish Build';
+  const APP_VERSION = 'Navigator Twin v3.1.4 — Pulse Click Handler Patch Build';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -2677,7 +2677,7 @@
           const low = getLowestPulseDomain(e.scores);
           return '<div class="pulse-entry">'
             + '<div class="pulse-entry-head"><div><div class="pulse-entry-title">' + escapeHtml(e.dateLabel || 'Pulse') + ' · Average ' + escapeHtml(String(e.avg)) + '/5</div><div class="pulse-entry-meta">Lowest signal: ' + escapeHtml(low.label) + (e.editedAt ? ' · edited' : '') + '</div></div>'
-            + '<div class="pulse-history-actions"><button class="btn small ghost" type="button" onclick="editCoherencePulse('' + escapeAttr(e.id) + '')">Edit</button><button class="btn small danger" type="button" onclick="deleteCoherencePulse('' + escapeAttr(e.id) + '')">Delete</button></div></div>'
+            + '<div class="pulse-history-actions"><button class="btn small ghost" type="button" onclick="editCoherencePulse(\'' + escapeAttr(e.id) + '\')">Edit</button><button class="btn small danger" type="button" onclick="deleteCoherencePulse(\'' + escapeAttr(e.id) + '\')">Delete</button></div></div>'
             + '<div class="pulse-mini-scores">' + COHERENCE_PULSE_DOMAINS.map(d => '<span class="pulse-chip">' + escapeHtml(d.short) + ' ' + escapeHtml(String(e.scores[d.key])) + '</span>').join('') + '</div>'
             + (e.note ? '<p style="color:var(--muted);margin:8px 0 0;">' + escapeHtml(e.note) + '</p>' : '')
             + (e.relationalNote ? '<p style="color:var(--muted);margin:8px 0 0;"><strong>Relational note:</strong> ' + escapeHtml(e.relationalNote) + '</p>' : '')
