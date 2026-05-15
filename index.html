@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — PWA-1 Mobile Companion</title>
-  <meta name="description" content="Navigator PWA-1 — Installable Mobile Companion Build adds manifest, service worker, icons, offline app-shell caching, and a phone-friendly Daily Coherence Pulse while preserving the local-first Navigator Twin core." />
+  <title>The Navigator — PWA-1.1 Merge Import</title>
+  <meta name="description" content="Navigator PWA-1.1 / v3.1.5 adds JSON Merge Import for phone-laptop workflow while preserving the installable local-first Navigator Twin core." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -770,7 +770,7 @@
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator PWA-1 · Installable Mobile Companion</div>
+        <div class="eyebrow">Navigator PWA-1.1 · Phone/Laptop Merge Workflow</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
         <div class="subtitle">This build makes Navigator installable as a mobile companion while preserving the local-first Twin core: seven-signal Daily Coherence Pulse, Home visibility, offline app-shell caching, and backend calls only when the user explicitly asks for AI help.</div>
       </div>
@@ -997,8 +997,8 @@
         <div class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="card-title">Memory & Backup</div>
-            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, coverage, questions, mode, and settings.</div>
-            <details class="help-note"><summary>What is this?</summary><div class="help-note-body"><p>Use JSON export as the safest full backup. Use Import / Restore to continue the same Twin later or on another browser.</p></div></details>
+            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, Pulse history, Move Cards, Coach Notes, PRF profile, mode, and settings.</div>
+            <details class="help-note"><summary>What is this?</summary><div class="help-note-body"><p>Use JSON export as the safest full backup. Use Import / Restore only when you want to replace this browser's memory. Use Merge JSON to add new records from another device, such as a phone session, without erasing this browser's existing memory.</p></div></details>
           </div>
           <div class="card-body">
             <div class="toolbar">
@@ -1006,9 +1006,13 @@
               <button class="btn small ghost" type="button" onclick="exportTwinJournal('json')">Export JSON</button>
               <button class="btn small primary" type="button" onclick="triggerImportTwinMemory()">Import / Restore JSON</button>
               <input id="import-json-file" type="file" accept="application/json,.json" style="display:none" onchange="handleImportTwinMemoryFile(event)" />
+              <button class="btn small purple" type="button" onclick="triggerMergeTwinMemory()">Merge JSON from Device</button>
+              <input id="merge-json-file" type="file" accept="application/json,.json" style="display:none" onchange="handleMergeTwinMemoryFile(event)" />
+              <button class="btn small ghost" type="button" onclick="exportLastPreMergeBackup()">Download Pre-Merge Backup</button>
               <button class="btn small danger" type="button" onclick="clearTwinMemory()">Clear Twin Memory</button>
             </div>
-            <div class="privacy-note">Export JSON is the safest backup because it preserves the full local memory state. Import/Restore replaces the current browser memory only after confirmation.</div>
+            <div class="privacy-note"><strong>Restore</strong> replaces this browser's memory. <strong>Merge</strong> adds new items from another device while preserving this browser's current PRF profile, settings, Current Move, and Context Assembly unless those are empty. Merge is not cloud sync; it is a local-first bridge for phone-to-laptop continuity.</div>
+            <div id="merge-import-preview" class="privacy-note" style="display:none; border-left-color: rgba(167,139,250,.65);"></div>
           </div>
         </div>
         <div class="card collapsible-card" style="margin-top:18px;" data-panel="journal">
@@ -1411,8 +1415,8 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator PWA-1 — Installable Mobile Companion Build</div>
-            <div class="card-desc">This build preserves the complete agency-navigation loop and adds the first installable PWA layer: manifest, icons, service worker, offline app-shell caching, phone-friendly Daily Coherence Pulse, and explicit rules that backend AI calls are never cached. It is intended for the separate PWA repo after v3.1.4 has been confirmed as a working non-PWA baseline.</div>
+            <div class="card-title">Navigator PWA-1.1 / v3.1.5 — JSON Merge Import</div>
+            <div class="card-desc">This build preserves the complete agency-navigation loop and PWA layer while adding a safer phone/laptop workflow: Restore JSON replaces memory; Merge JSON adds new records from another device without erasing the current long-term memory vault.</div>
           </div>
           <div class="card-body">
             <div class="help-section">
@@ -1455,7 +1459,7 @@
             <div class="help-section">
               <h3>Near-term roadmap after this stable demo</h3>
               <ul>
-                <li><strong>PWA testing:</strong> confirm install behavior, update behavior, offline app-shell behavior, and phone/laptop layout separately.</li>
+                <li><strong>PWA testing and merge workflow:</strong> confirm install behavior, update behavior, offline app-shell behavior, and JSON Merge Import from phone to laptop.</li>
                 <li><strong>Navigator Private API specification:</strong> dedicated privacy-minimizing endpoints for Twin, Capsules, Field Maps, Move Cards, and Coaches.</li>
                 <li><strong>PRF-22 profile integration:</strong> next refinements can make Field Scans and Move Cards more explicitly PRF-aware without turning the profile into a deterministic verdict.</li>
                 <li><strong>Applications & Coaches:</strong> optional guided modules such as AAC&amp;U Critical Thinking Coach, Ethical Reasoning Coach, EBB Chapter Coaches, and Research Project Coach.</li>
@@ -1547,7 +1551,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">Stable fallback build: this version does not register a service worker and does not include PWA caching. Version: Navigator PWA-1 — Installable Mobile Companion Build Shell.</div>
+            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator PWA-1.1 / v3.1.5 — JSON Merge Import.</div>
           </div>
         </div>
         </aside>
@@ -1561,9 +1565,9 @@
 (function(){
   'use strict';
 
-  const ENABLE_PWA = true; // PWA-1 installable build: cache shell only, never backend AI calls.
+  const ENABLE_PWA = true; // PWA-1.1 installable build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator PWA-1 — Installable Mobile Companion Build Build';
+  const APP_VERSION = 'Navigator PWA-1.1 / v3.1.5 — JSON Merge Import for Phone-Laptop Workflow';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -1589,7 +1593,8 @@
     activeCoach: 'navigator_twin_v3_active_coach',
     uiPanels: 'navigator_twin_v2_ui_panels',
     welcomeDismissed: 'navigator_twin_v2_welcome_dismissed',
-    workspace: 'navigator_twin_v2_active_workspace'
+    workspace: 'navigator_twin_v2_active_workspace',
+    preMergeBackup: 'navigator_twin_v3_premerge_backup'
   };
 
   const DIMENSIONS = [
@@ -3283,35 +3288,39 @@ Return only valid JSON with this exact shape:
     setCoverage(cov);
   }
 
+  function buildNavigatorBackupPayload(){
+    return {
+      appVersion: APP_VERSION,
+      exportedAt: new Date().toISOString(),
+      chat: getChat(),
+      journal: getJournal(),
+      coverage: getCoverage(),
+      questions: getQuestions(),
+      documentCapsules: getCapsules(),
+      pendingCapsule: getPendingCapsule(),
+      fieldScans: getFieldScans(),
+      contextAssembly: getContextAssembly(),
+      moveCards: getMoveCards(),
+      pendingMoveCards: getPendingMoveCards(),
+      currentMoveId: getCurrentMoveId(),
+      moveCompareSelection: getMoveCompareSelection(),
+      moveComparisonLens: getMoveComparisonLens(),
+      currentMovePlan: getCurrentMovePlan(),
+      prf22Profile: getPrf22Profile(),
+      coachNotes: getCoachNotes(),
+      coherencePulse: getCoherencePulseHistory(),
+      mode: getMode(),
+      settings: getSettings()
+    };
+  }
+
   function exportTwinJournal(kind){
     const chat = getChat();
     const journal = getJournal();
     const coverage = getCoverage();
     let content, type, filename;
     if(kind === 'json'){
-      content = JSON.stringify({
-        appVersion: APP_VERSION,
-        exportedAt: new Date().toISOString(),
-        chat,
-        journal,
-        coverage,
-        questions: getQuestions(),
-        documentCapsules: getCapsules(),
-        pendingCapsule: getPendingCapsule(),
-        fieldScans: getFieldScans(),
-        contextAssembly: getContextAssembly(),
-        moveCards: getMoveCards(),
-        pendingMoveCards: getPendingMoveCards(),
-        currentMoveId: getCurrentMoveId(),
-        moveCompareSelection: getMoveCompareSelection(),
-        moveComparisonLens: getMoveComparisonLens(),
-        currentMovePlan: getCurrentMovePlan(),
-        prf22Profile: getPrf22Profile(),
-        coachNotes: getCoachNotes(),
-        coherencePulse: getCoherencePulseHistory(),
-        mode: getMode(),
-        settings: getSettings()
-      }, null, 2);
+      content = JSON.stringify(buildNavigatorBackupPayload(), null, 2);
       type = 'application/json'; filename = 'navigator-twin-journal.json';
     } else {
       content = 'Navigator Twin Journal\nExported: ' + new Date().toLocaleString() + '\n\n'
@@ -3460,7 +3469,6 @@ Return only valid JSON with this exact shape:
     if(!data || typeof data !== 'object') throw new Error('The selected file is not a valid Navigator Twin JSON object.');
     const chat = Array.isArray(data.chat) ? data.chat.map(normalizeImportedMessage).filter(m => m.content.trim()) : [];
     const journal = Array.isArray(data.journal) ? data.journal.map(normalizeImportedJournalEntry).filter(e => e.text.trim().length >= 8) : [];
-    if(chat.length === 0 && journal.length === 0) throw new Error('The selected JSON does not contain a usable Twin conversation or Twin Journal.');
     let coverage = data.coverage && typeof data.coverage === 'object' ? data.coverage : null;
     if(!coverage){
       coverage = {};
@@ -3488,6 +3496,8 @@ Return only valid JSON with this exact shape:
     const prf22Profile = normalizeImportedPrf22Profile(data.prf22Profile || data.prfProfile || null, { fromNavigatorBackup:true });
     const coachNotes = Array.isArray(data.coachNotes) ? data.coachNotes.map(normalizeImportedCoachNote).filter(Boolean) : [];
     const coherencePulse = Array.isArray(data.coherencePulse) ? data.coherencePulse.map(normalizeImportedCoherencePulse).filter(Boolean) : [];
+    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
+    if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
     return { chat, journal, coverage, questions, mode, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, coherencePulse }; 
   }
 
@@ -3534,6 +3544,269 @@ Return only valid JSON with this exact shape:
   }
   window.handleImportTwinMemoryFile = handleImportTwinMemoryFile;
 
+  let pendingMergeImportPlan = null;
+
+  function triggerMergeTwinMemory(){
+    const input = document.getElementById('merge-json-file');
+    if(input) input.click();
+  }
+  window.triggerMergeTwinMemory = triggerMergeTwinMemory;
+
+  function mergeNormalizeText(value){
+    return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  function mergeFingerprint(item, kind){
+    if(!item) return '';
+    if(kind === 'chat') return [item.role, item.timestamp, mergeNormalizeText(item.content).slice(0, 500)].join('|');
+    if(kind === 'journal') return [item.category, mergeNormalizeText(item.text)].join('|');
+    if(kind === 'capsule') return [mergeNormalizeText(item.title), mergeNormalizeText(item.summary).slice(0, 500)].join('|');
+    if(kind === 'field') return [mergeNormalizeText(item.title || item.environment), mergeNormalizeText(item.summary || item.nextMove).slice(0, 500)].join('|');
+    if(kind === 'move') return [mergeNormalizeText(item.title), mergeNormalizeText(item.firstAction).slice(0, 500)].join('|');
+    if(kind === 'coach') return [item.coachId, mergeNormalizeText(item.title), mergeNormalizeText(item.summary).slice(0, 500)].join('|');
+    if(kind === 'pulse') return [item.createdAt, JSON.stringify(item.scores || {}), mergeNormalizeText(item.note).slice(0, 200)].join('|');
+    return mergeNormalizeText(JSON.stringify(item).slice(0, 1000));
+  }
+
+  function mergeTimestamp(item){
+    const raw = item && (item.updatedAt || item.savedAt || item.createdAt || item.timestamp || item.importedAt || '');
+    const t = raw ? new Date(raw).getTime() : 0;
+    return Number.isFinite(t) ? t : 0;
+  }
+
+  function mergeCollection(existing, incoming, kind, limit){
+    const out = Array.isArray(existing) ? existing.slice() : [];
+    const byId = new Map();
+    const fingerprints = new Set();
+    out.forEach((item, index) => {
+      if(item && item.id) byId.set(String(item.id), index);
+      const fp = mergeFingerprint(item, kind);
+      if(fp) fingerprints.add(fp);
+    });
+    const stats = { added:0, updated:0, skipped:0 };
+    (Array.isArray(incoming) ? incoming : []).forEach(item => {
+      if(!item) return;
+      const id = item.id ? String(item.id) : '';
+      const fp = mergeFingerprint(item, kind);
+      if(id && byId.has(id)){
+        const index = byId.get(id);
+        if(mergeTimestamp(item) > mergeTimestamp(out[index])){
+          out[index] = item;
+          stats.updated += 1;
+        } else {
+          stats.skipped += 1;
+        }
+        return;
+      }
+      if(fp && fingerprints.has(fp)){
+        stats.skipped += 1;
+        return;
+      }
+      out.push(item);
+      if(id) byId.set(id, out.length - 1);
+      if(fp) fingerprints.add(fp);
+      stats.added += 1;
+    });
+    const items = Number(limit) ? out.slice(-limit) : out;
+    return { items, stats };
+  }
+
+  function mergeQuestions(localQuestions, importedQuestions){
+    const out = Array.isArray(localQuestions) ? localQuestions.slice() : [];
+    const seen = new Set(out.map(q => mergeNormalizeText(q)));
+    (Array.isArray(importedQuestions) ? importedQuestions : []).forEach(q => {
+      const text = String(q || '').trim();
+      const key = mergeNormalizeText(text);
+      if(text && !seen.has(key)){
+        out.push(text);
+        seen.add(key);
+      }
+    });
+    return out.slice(-60);
+  }
+
+  function mergeCoverage(localCoverage, importedCoverage){
+    const out = {};
+    DIMENSIONS.forEach(d => {
+      out[d.key] = Math.max(0, Math.min(5, Math.max(Number(localCoverage && localCoverage[d.key]) || 0, Number(importedCoverage && importedCoverage[d.key]) || 0)));
+    });
+    return out;
+  }
+
+  function buildMergeImportPlan(restored, fileName){
+    const collections = {
+      chat: mergeCollection(getChat(), restored.chat, 'chat'),
+      journal: mergeCollection(getJournal(), restored.journal, 'journal'),
+      documentCapsules: mergeCollection(getCapsules(), restored.documentCapsules, 'capsule', 30),
+      fieldScans: mergeCollection(getFieldScans(), restored.fieldScans, 'field', 40),
+      moveCards: mergeCollection(getMoveCards(), restored.moveCards, 'move', 80),
+      pendingMoveCards: mergeCollection(getPendingMoveCards(), restored.pendingMoveCards, 'move', 8),
+      coachNotes: mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80),
+      coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120)
+    };
+    const questions = mergeQuestions(getQuestions(), restored.questions);
+    const coverage = mergeCoverage(getCoverage(), restored.coverage);
+
+    const localContext = getContextAssembly();
+    const importedContext = restored.contextAssembly || { text:'', updatedAt:'' };
+    const useImportedContext = !(localContext && String(localContext.text || '').trim()) && importedContext && String(importedContext.text || '').trim();
+    const contextAssembly = useImportedContext ? importedContext : localContext;
+
+    const localPrf = getPrf22Profile();
+    const useImportedPrf = !localPrf && restored.prf22Profile;
+    const prf22Profile = useImportedPrf ? restored.prf22Profile : localPrf;
+
+    const mergedMoveIds = new Set(collections.moveCards.items.map(m => m.id));
+    const localCurrentMoveId = getCurrentMoveId();
+    let currentMoveId = localCurrentMoveId;
+    let currentMoveAction = localCurrentMoveId ? 'preserved local' : 'none';
+    if(!currentMoveId && restored.currentMoveId && mergedMoveIds.has(restored.currentMoveId)){
+      currentMoveId = restored.currentMoveId;
+      currentMoveAction = 'added from import';
+    } else if(localCurrentMoveId && restored.currentMoveId && localCurrentMoveId !== restored.currentMoveId){
+      currentMoveAction = 'preserved local; imported current move skipped';
+    }
+
+    const localPlan = getCurrentMovePlan();
+    let currentMovePlan = localPlan;
+    let currentMovePlanAction = localPlan ? 'preserved local' : 'none';
+    if(!localPlan && restored.currentMovePlan && (!restored.currentMovePlan.moveId || mergedMoveIds.has(restored.currentMovePlan.moveId))){
+      currentMovePlan = restored.currentMovePlan;
+      currentMovePlanAction = 'added from import';
+    } else if(localPlan && restored.currentMovePlan){
+      currentMovePlanAction = 'preserved local; imported plan skipped';
+    }
+
+    const localSelection = getMoveCompareSelection();
+    const moveCompareSelection = localSelection.length ? localSelection.filter(id => mergedMoveIds.has(id)) : (restored.moveCompareSelection || []).filter(id => mergedMoveIds.has(id)).slice(0,4);
+    const moveComparisonLens = localSelection.length ? getMoveComparisonLens() : (restored.moveComparisonLens || getMoveComparisonLens());
+
+    return {
+      fileName: fileName || 'selected JSON',
+      imported: restored,
+      collections,
+      questions,
+      coverage,
+      contextAssembly,
+      contextAction: useImportedContext ? 'added from import' : ((localContext && String(localContext.text || '').trim()) ? 'preserved local' : 'none'),
+      prf22Profile,
+      prfAction: useImportedPrf ? 'added from import' : (localPrf ? 'preserved local' : 'none'),
+      currentMoveId,
+      currentMoveAction,
+      moveCompareSelection,
+      moveComparisonLens,
+      currentMovePlan,
+      currentMovePlanAction,
+      importedMode: restored.mode,
+      createdAt: new Date().toISOString()
+    };
+  }
+
+  function mergeStatsLine(label, result){
+    const s = result && result.stats ? result.stats : { added:0, updated:0, skipped:0 };
+    return '<li><strong>' + escapeHtml(label) + ':</strong> +' + s.added + ' new, ' + s.updated + ' updated, ' + s.skipped + ' skipped as duplicate/older</li>';
+  }
+
+  function renderMergeImportPreview(plan){
+    const box = document.getElementById('merge-import-preview');
+    if(!box) return;
+    if(!plan){ box.style.display = 'none'; box.innerHTML = ''; return; }
+    const c = plan.collections;
+    box.style.display = 'block';
+    box.innerHTML = '<div style="font-weight:900; color:var(--gold); margin-bottom:6px;">Merge Preview: ' + escapeHtml(plan.fileName) + '</div>'
+      + '<p>This will add new records from the selected JSON without erasing the current browser memory. Existing records with matching IDs or matching content are skipped unless the imported version appears newer.</p>'
+      + '<ul class="help-list">'
+      + mergeStatsLine('Conversation turns', c.chat)
+      + mergeStatsLine('Twin Journal entries', c.journal)
+      + mergeStatsLine('Document Capsules', c.documentCapsules)
+      + mergeStatsLine('Field Scans', c.fieldScans)
+      + mergeStatsLine('Move Cards', c.moveCards)
+      + mergeStatsLine('Pending Move drafts', c.pendingMoveCards)
+      + mergeStatsLine('Coach Notes', c.coachNotes)
+      + mergeStatsLine('Daily Pulse readings', c.coherencePulse)
+      + '</ul>'
+      + '<p><strong>Preserved by default:</strong> settings and backend URL. PRF profile: ' + escapeHtml(plan.prfAction) + '. Context Assembly: ' + escapeHtml(plan.contextAction) + '. Current Move: ' + escapeHtml(plan.currentMoveAction) + '. Current Move Plan: ' + escapeHtml(plan.currentMovePlanAction) + '.</p>'
+      + '<div class="toolbar"><button class="btn small primary" type="button" onclick="confirmMergeTwinMemory()">Confirm Merge</button><button class="btn small ghost" type="button" onclick="cancelMergeTwinMemory()">Cancel Merge</button></div>';
+  }
+
+  async function handleMergeTwinMemoryFile(event){
+    const input = event && event.target;
+    const file = input && input.files && input.files[0];
+    if(!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const restored = validateImportPayload(data);
+      pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
+      renderMergeImportPreview(pendingMergeImportPlan);
+      const box = document.getElementById('merge-import-preview');
+      if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
+    } catch(e) {
+      pendingMergeImportPlan = null;
+      renderMergeImportPreview(null);
+      alert('Could not prepare this JSON file for merge: ' + e.message);
+      showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
+    } finally {
+      if(input) input.value = '';
+    }
+  }
+  window.handleMergeTwinMemoryFile = handleMergeTwinMemoryFile;
+
+  function confirmMergeTwinMemory(){
+    const plan = pendingMergeImportPlan;
+    if(!plan){ alert('Choose a Navigator JSON file to merge first.'); return; }
+    if(!confirm('Merge new records from ' + plan.fileName + ' into this browser without replacing current memory?')) return;
+    try {
+      try { localStorage.setItem(KEYS.preMergeBackup, JSON.stringify(buildNavigatorBackupPayload())); } catch(e) {}
+      setChat(plan.collections.chat.items);
+      setJournal(plan.collections.journal.items);
+      setCoverage(plan.coverage);
+      setQuestions(plan.questions);
+      setCapsules(plan.collections.documentCapsules.items);
+      setFieldScans(plan.collections.fieldScans.items);
+      setContextAssembly(plan.contextAssembly || { text:'', updatedAt:new Date().toISOString() });
+      setMoveCards(plan.collections.moveCards.items);
+      setPendingMoveCards(plan.collections.pendingMoveCards.items);
+      setCurrentMoveId(plan.currentMoveId && plan.collections.moveCards.items.some(m => m.id === plan.currentMoveId) ? plan.currentMoveId : '');
+      setMoveCompareSelection((plan.moveCompareSelection || []).filter(id => plan.collections.moveCards.items.some(m => m.id === id)));
+      setMoveComparisonLens(plan.moveComparisonLens || 'balanced');
+      setCurrentMovePlan(plan.currentMovePlan && (!plan.currentMovePlan.moveId || plan.collections.moveCards.items.some(m => m.id === plan.currentMovePlan.moveId)) ? plan.currentMovePlan : null);
+      setPrf22Profile(plan.prf22Profile || null);
+      setCoachNotes(plan.collections.coachNotes.items);
+      setCoherencePulseHistory(plan.collections.coherencePulse.items);
+      try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
+      pendingMergeImportPlan = null;
+      renderMergeImportPreview(null);
+      renderAll();
+      alert('Merge complete. New items were added without replacing the current memory. A pre-merge backup was saved locally and can be downloaded from Memory & Backup.');
+    } catch(e) {
+      alert('Merge failed: ' + e.message);
+      showDebug('MERGE APPLY ERROR: ' + (e && e.stack ? e.stack : e.message));
+    }
+  }
+  window.confirmMergeTwinMemory = confirmMergeTwinMemory;
+
+  function cancelMergeTwinMemory(){
+    pendingMergeImportPlan = null;
+    renderMergeImportPreview(null);
+  }
+  window.cancelMergeTwinMemory = cancelMergeTwinMemory;
+
+  function exportLastPreMergeBackup(){
+    let raw = '';
+    try { raw = localStorage.getItem(KEYS.preMergeBackup) || ''; } catch(e) {}
+    if(!raw){ alert('No pre-merge backup is stored yet. A backup is created automatically before each confirmed merge.'); return; }
+    const blob = new Blob([raw], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'navigator-pre-merge-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  window.exportLastPreMergeBackup = exportLastPreMergeBackup;
 
 
   function normalizeImportedCapsule(c){
