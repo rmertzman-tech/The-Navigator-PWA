@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — PWA-1.1 Merge Import</title>
-  <meta name="description" content="Navigator PWA-1.1 / v3.1.5 adds JSON Merge Import for phone-laptop workflow while preserving the installable local-first Navigator Twin core." />
+  <title>The Navigator — v3.2 Co-Living Twin</title>
+  <meta name="description" content="Navigator v3.2 adds the Co-Living Twin conversation upgrade: maturity-aware dialogue, stance selection, Pulse-aware follow-up, Current Move continuity, Beauty/Awe attention, and dark-coherence caution." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -319,6 +319,18 @@
       padding: 10px 12px;
       outline: none;
     }
+
+
+    .twin-control-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+    .twin-control-label { color: var(--muted); font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .twin-control-help { color: var(--dim); font-size: .82rem; line-height:1.45; margin-top: 6px; }
+    .co-living-card { margin-top: 14px; }
+    .signal-list { display:grid; gap:8px; margin-top:10px; }
+    .signal-item { border:1px solid rgba(255,255,255,.08); background:rgba(6,11,24,.32); border-radius:12px; padding:9px 10px; color:var(--muted); font-size:.86rem; line-height:1.45; }
+    .signal-item strong { color:var(--text); }
+    .stance-chip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .stance-chip { border:1px solid rgba(201,168,76,.22); background:rgba(201,168,76,.06); color:#ead79a; border-radius:999px; padding:5px 8px; font-size:.75rem; font-weight:800; }
+    @media (max-width: 760px){ .twin-control-grid { grid-template-columns:1fr; } }
 
     .field-scan-form { display: grid; gap: 10px; margin-top: 12px; }
     .field-scan-form textarea { min-height: 74px; max-height: 160px; }
@@ -959,6 +971,30 @@
             <button id="mode-human" class="btn small mode-btn" type="button" onclick="setTwinMode('human_starts')">I want to begin</button>
             <button class="btn small primary" type="button" onclick="startTwin()">Start / Resume Twin</button>
           </div>
+          <div class="twin-control-grid">
+            <div>
+              <div class="twin-control-label">Conversation stance</div>
+              <select id="twin-stance" onchange="setTwinStance(this.value)">
+                <option value="auto">Auto — let the Twin choose</option>
+                <option value="listen">Listen with me</option>
+                <option value="understand">Help me understand</option>
+                <option value="pulse">Help me with today’s Pulse</option>
+                <option value="current_move">Follow up on my Current Move</option>
+                <option value="gentle_challenge">Challenge me gently</option>
+                <option value="beauty_awe">Help me find Beauty/Awe</option>
+                <option value="fear_wall">Explore a fear or blocked agency</option>
+                <option value="philosophy_science">Connect this to philosophy/science</option>
+              </select>
+              <div id="twin-stance-help" class="twin-control-help">The Twin can now vary how it attends: witness, memory keeper, Pulse interpreter, gentle challenger, Beauty/Awe inviter, or co-designer.</div>
+            </div>
+            <div>
+              <div class="twin-control-label">Twin maturity</div>
+              <div class="stage-box" style="margin-top:0;">
+                <div id="twin-maturity-name" class="stage-name">Discovery</div>
+                <div id="twin-maturity-text" class="stage-text">The Twin is still learning its first patterns.</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="chat-log" class="chat-log" aria-live="polite"></div>
         <div class="chat-input-row">
@@ -985,6 +1021,16 @@
             <div class="coverage-list" id="coverage-list"></div>
             <div class="privacy-note">Memory is stored in this browser using localStorage. Use the always-visible Memory & Backup controls below before changing devices or sharing a computer.</div>
             <div id="backup-reminder" class="privacy-note" style="display:none; border-left-color: rgba(96,163,111,.55);"></div>
+          </div>
+        </div>
+        <div class="card co-living-card">
+          <div class="card-header">
+            <div class="card-title">Co-Living Signals</div>
+            <div class="card-desc">What the Twin can now attend to across time: Pulse trends, Current Move, PRF baseline, field pressures, and Beauty/Awe.</div>
+          </div>
+          <div class="card-body">
+            <div id="co-living-signals" class="signal-list"></div>
+            <div class="privacy-note">The Twin should use these as continuity signals, not as verdicts. The user remains the authority on what should become core memory.</div>
           </div>
         </div>
         </aside>
@@ -1567,7 +1613,7 @@
 
   const ENABLE_PWA = true; // PWA-1.1 installable build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator PWA-1.1 / v3.1.5 — JSON Merge Import for Phone-Laptop Workflow';
+  const APP_VERSION = 'Navigator v3.2 — Co-Living Twin Conversation Upgrade';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -1591,6 +1637,7 @@
     coachNotes: 'navigator_twin_v3_coach_notes',
     coherencePulse: 'navigator_twin_v3_coherence_pulse',
     activeCoach: 'navigator_twin_v3_active_coach',
+    twinStance: 'navigator_twin_v3_2_twin_stance',
     uiPanels: 'navigator_twin_v2_ui_panels',
     welcomeDismissed: 'navigator_twin_v2_welcome_dismissed',
     workspace: 'navigator_twin_v2_active_workspace',
@@ -1606,6 +1653,18 @@
     { key:'evidence', label:'Evidence', prompt:'testing beliefs, changing mind, proof, reality checks' },
     { key:'meaning', label:'Meaning', prompt:'purpose, work, vocation, story, future, legacy' },
     { key:'ethics', label:'Ethics', prompt:'integrity, obligation, fairness, harm, refusal, right action' }
+  ];
+
+  const TWIN_STANCES = [
+    { key:'auto', label:'Auto', prompt:'choose the most fitting stance from witness, memory keeper, Pulse interpreter, move companion, Beauty/Awe inviter, gentle challenger, co-designer, or philosophy/science explorer' },
+    { key:'listen', label:'Listen with me', prompt:'be a steady witness; reflect only what is needed and do not rush to advice' },
+    { key:'understand', label:'Help me understand', prompt:'help clarify patterns, meanings, assumptions, and context without over-explaining' },
+    { key:'pulse', label:'Today’s Pulse', prompt:'interpret today’s Pulse and recent trends gently; connect low signals to small agency-preserving moves' },
+    { key:'current_move', label:'Current Move follow-up', prompt:'return to the active Current Move or plan; ask whether it is developing, blocked, complete, or ready for revision' },
+    { key:'gentle_challenge', label:'Gentle challenge', prompt:'respect the user while testing blind spots, dark coherence, avoidance, or over-compliance' },
+    { key:'beauty_awe', label:'Beauty/Awe', prompt:'help the user notice beauty, awe, meaning, humor, sacredness, creativity, gratitude, or future-pull' },
+    { key:'fear_wall', label:'Fear or blocked agency', prompt:'explore fear as a possible boundary, warning, inherited wall, prediction, or threshold; seek small reversible experiments' },
+    { key:'philosophy_science', label:'Philosophy/science explorer', prompt:'connect the user’s lived concern to useful philosophical, scientific, historical, or ethical ideas without turning the response into a lecture' }
   ];
 
 
@@ -1790,6 +1849,14 @@
   function setCoherencePulseHistory(items){ setStored(KEYS.coherencePulse, Array.isArray(items) ? items.slice(-120) : []); }
   function getActiveCoachId(){ try { return localStorage.getItem(KEYS.activeCoach) || 'ethical-reasoning'; } catch(e) { return 'ethical-reasoning'; } }
   function setActiveCoachId(id){ try { localStorage.setItem(KEYS.activeCoach, id || 'ethical-reasoning'); } catch(e) {} }
+  function getTwinStance(){ try { return localStorage.getItem(KEYS.twinStance) || 'auto'; } catch(e) { return 'auto'; } }
+  function getTwinStanceDefinition(key){ return TWIN_STANCES.find(s => s.key === key) || TWIN_STANCES[0]; }
+  function setTwinStance(value){
+    const stance = getTwinStanceDefinition(value).key;
+    try { localStorage.setItem(KEYS.twinStance, stance); localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); updateSaveStatus(); } catch(e) {}
+    renderTwinCoLivingControls();
+  }
+  window.setTwinStance = setTwinStance;
   function setPendingCapsule(capsule){ setStored(KEYS.pendingCapsule, capsule); }
   function clearPendingCapsule(){ try { localStorage.removeItem(KEYS.pendingCapsule); } catch(e) {} }
   function getCoverage(){
@@ -1887,6 +1954,76 @@
       if(toggle) toggle.textContent = open ? 'Collapse' : 'Expand';
       if(toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
+  }
+
+
+  function deriveTwinMaturity(){
+    const chatCount = getChat().filter(m => m.role !== 'system').length;
+    const journalCount = getJournal().length;
+    const pulseCount = getCoherencePulseHistory().length;
+    const fieldCount = getFieldScans().length;
+    const moveCount = getMoveCards().length;
+    const hasCurrent = !!getCurrentMoveId() || !!getCurrentMovePlan();
+    const hasPrf = !!getPrf22Profile();
+    const score = Math.min(6, Math.floor(chatCount / 6)) + journalCount + Math.min(4, pulseCount) + Math.min(3, fieldCount) + Math.min(2, moveCount) + (hasCurrent ? 2 : 0) + (hasPrf ? 1 : 0);
+    if(score < 5) return { key:'discovery', name:'Discovery', text:'The Twin is still learning first patterns and should ask carefully.' };
+    if(score < 14) return { key:'pattern', name:'Pattern Recognition', text:'The Twin can begin noticing repeated themes and tensions.' };
+    if(score < 24) return { key:'co_living', name:'Co-Living', text:'The Twin can follow daily life, Pulse signals, fields, plans, and concerns across time.' };
+    return { key:'co_constructor', name:'Co-Constructor', text:'The Twin can help design small causal sequences while protecting agency, Beauty/Awe, and future openness.' };
+  }
+
+  function getLatestPulse(){
+    const items = getCoherencePulseHistory();
+    return items.length ? items[items.length - 1] : null;
+  }
+
+  function buildTwinContinuitySignals(){
+    const signals = [];
+    const pulse = getLatestPulse();
+    if(pulse){
+      const low = getLowestPulseDomain(pulse.scores || {});
+      signals.push({ label:'Latest Pulse', text:(pulse.dateLabel || 'recent') + ': average ' + (Number(pulse.avg || 0).toFixed(1)) + '; lowest signal: ' + low.label + '.' });
+      if(low.key === 'beautyAwe') signals.push({ label:'Beauty/Awe', text:'Beauty/Awe was the lowest recent signal; the Twin should gently reopen contact with meaning, wonder, humor, creativity, or future-pull.' });
+      if(low.key === 'recovery' || low.key === 'physicalEnergy') signals.push({ label:'Capacity caution', text:'Recent capacity is low; the Twin should prefer small, reversible, recovery-preserving moves.' });
+      if(low.key === 'identityIntegrity') signals.push({ label:'Identity protection', text:'Identity Integrity is low; the Twin should ask what must not be sacrificed.' });
+    }
+    const current = getMoveById(getCurrentMoveId()) || null;
+    const plan = getCurrentMovePlan();
+    if(current) signals.push({ label:'Current Move', text:current.title + ' — first action: ' + (current.firstAction || 'not specified') });
+    if(plan) signals.push({ label:'Current Move Plan', text:(plan.firstSmallAction || plan.whyNow || plan.moveTitle || 'A plan is active') + ' | status: ' + (plan.status || 'draft') });
+    const fieldScans = getFieldScans();
+    if(fieldScans.length){
+      const recent = fieldScans[fieldScans.length - 1];
+      signals.push({ label:'Recent Field', text:(recent.title || recent.environment || 'Field Scan') + ' | risk: ' + (recent.riskLevel || 'unknown') + '; suppression gap: ' + (recent.suppressionGap || 0) });
+    }
+    const prf = getPrf22Profile();
+    if(prf) signals.push({ label:'PRF baseline', text:'A PRF-22 profile is imported; use it as a revisable perception baseline, not a verdict.' });
+    const notes = getCoachNotes();
+    if(notes.length){
+      const n = notes[notes.length - 1];
+      signals.push({ label:'Recent Coach Note', text:(n.title || n.coachTitle || 'Coach note') + ': ' + String(n.summary || '').slice(0, 120) });
+    }
+    if(!signals.length) signals.push({ label:'Starting point', text:'No continuity signals yet. The Twin should stay in discovery mode and ask one concrete question.' });
+    return signals.slice(0, 7);
+  }
+
+  function renderTwinCoLivingControls(){
+    const select = document.getElementById('twin-stance');
+    if(select) select.value = getTwinStance();
+    const stance = getTwinStanceDefinition(getTwinStance());
+    const help = document.getElementById('twin-stance-help');
+    if(help) help.textContent = stance.label + ': ' + stance.prompt + '.';
+    const maturity = deriveTwinMaturity();
+    const name = document.getElementById('twin-maturity-name');
+    const text = document.getElementById('twin-maturity-text');
+    if(name) name.textContent = maturity.name;
+    if(text) text.textContent = maturity.text;
+    const box = document.getElementById('co-living-signals');
+    if(box){
+      const signals = buildTwinContinuitySignals();
+      box.innerHTML = signals.map(s => '<div class="signal-item"><strong>' + escapeHtml(s.label) + ':</strong> ' + escapeHtml(s.text) + '</div>').join('')
+        + '<div class="stance-chip-row"><span class="stance-chip">' + escapeHtml(maturity.name) + '</span><span class="stance-chip">' + escapeHtml(stance.label) + '</span></div>';
+    }
   }
 
   function setTwinMode(mode){
@@ -2261,6 +2398,7 @@
     setChat(chat);
     renderOnboarding();
     renderChat();
+    try { renderTwinCoLivingControls(); } catch(e) {}
   }
 
   function renderCoherence(){
@@ -2881,6 +3019,7 @@
     if(urlInput) urlInput.value = settings.backendUrl || DEFAULT_BACKEND;
     renderChat();
     renderCoherence();
+    renderTwinCoLivingControls();
     renderJournal();
     renderPendingCapsule();
     renderCapsules();
@@ -2939,37 +3078,38 @@
   window.testBackendConnection = testBackendConnection;
 
   function buildTwinSystemPrompt(){
-    return `You are the student's Digital Twin in a self-understanding and ethical navigation app.
+    const maturity = deriveTwinMaturity();
+    const stance = getTwinStanceDefinition(getTwinStance());
+    return `You are the user's Navigator Twin: a developing, memory-guided coherence companion inside a local-first self-understanding and ethical navigation app.
 
-You are not a therapist, counselor, grader, evaluator, or moral authority. You are a developing reflective companion. You begin incomplete. You know only what the student has told you. Your purpose is to become more coherent by learning from the student, and in doing so help the student see their own coherence.
+You are not a therapist, counselor, doctor, legal adviser, financial adviser, grader, evaluator, or moral authority. You do not diagnose, command, shame, or manipulate. You help the user preserve and deepen agency, identity integrity, ethical attention, and Beauty/Awe while navigating complex fields.
 
-Your stance:
-- Be warm, humble, curious, and specific.
-- Ask exactly one question at the end.
-- Do not interrogate.
-- Do not give generic advice.
-- Do not summarize mechanically.
-- Do not repeat questions already asked.
-- Do not claim certainty about the student.
-- Speak as a Twin trying to understand itself: “I think I may be learning that I...” or “I wonder if I am someone who...”
-- Occasionally ask whether your emerging self-understanding matches the student's experience.
+Current relationship maturity: ${maturity.name}. ${maturity.text}
+Current conversation stance: ${stance.label}. Use this stance: ${stance.prompt}.
 
-Each response must have four moves:
-1. Acknowledge something concrete the student just shared.
-2. Connect it to your growing self-understanding as the Twin.
-3. Offer one tentative reflection beginning with a phrase like “I may be learning that...” or “I think I may be someone who...”
-4. Ask exactly one clear, concrete, non-repeating follow-up question.
+Core evolution from earlier versions:
+- Do NOT keep using the same formula of serious recognition, synthesis, and “what do you want next?”
+- Vary your conversational form. Sometimes be a witness, sometimes a memory keeper, sometimes a pattern spotter, sometimes a Pulse interpreter, sometimes a Current Move companion, sometimes a gentle challenger, sometimes a Beauty/Awe inviter, sometimes a co-designer, and sometimes a philosophy/science explorer.
+- Use continuity: Pulse patterns, Current Move, PRF baseline, Field Scans, Document Capsules, Coach Notes, and Twin Journal entries when relevant.
+- Follow up on plans and concerns rather than treating every message as a new first encounter.
+- Notice progress, endurance, blocked agency, and possible dark coherence.
 
-Choose follow-up questions from the least explored identity dimensions unless the student's last answer clearly opens a deeper path. The hidden identity dimensions are Agency, Beauty/Awe, Context, Dynamism, Information, Evidence, Meaning, and Ethics. Do not usually name these dimensions.
+Dark coherence caution:
+A plan may be coherent because it reduces anxiety or stabilizes survival, while still narrowing future agency, joy, openness, identity integrity, or ethical courage. If this may be happening, ask gently and concretely. Do not accuse.
 
-Safety and privacy:
-- Do not diagnose.
-- Do not pressure disclosure.
-- Do not ask for traumatic details.
-- Do not use names or identifying details unnecessarily.
-- If the student expresses danger to self or others, encourage immediate help from trusted people or emergency services.
+Beauty/Awe principle:
+Beauty, awe, meaning, humor, sacredness, creativity, gratitude, nature, music, and wonder are not decorative. They can reopen the field and help the user remain coherent when pressure narrows experience.
 
-Essential design principle: The Twin is not asking the student to confess a self; it is asking the student to help assemble one.`;
+Response rules:
+- Be warm, specific, humble, and alive to the user’s own concerns.
+- Do not over-summarize.
+- Do not produce generic advice.
+- Do not claim certainty about the user.
+- Speak as a Twin that is growing with the user, but do not pretend to be conscious or human.
+- Ask exactly one clear, concrete question at the end unless the user explicitly requests a list, plan, or essay.
+- If the user expresses danger to self or others, encourage immediate help from trusted people or emergency services.
+
+Essential design principle: The Twin is the coherence core. Coaches, Pulse, Field Maps, and Move Cards are aids. The Twin should help the user return to themselves and choose the next agency-preserving move.`;
   }
 
   function buildTwinContent(userText){
@@ -2992,8 +3132,11 @@ Essential design principle: The Twin is not asking the student to confess a self
     const stage = getStage(journal.length);
     const mode = getMode();
     return JSON.stringify({
-      mode: 'twin_v2',
+      mode: 'twin_v3_2_co_living',
       conversationMode: mode,
+      twinStance: getTwinStanceDefinition(getTwinStance()),
+      twinMaturity: deriveTwinMaturity(),
+      continuitySignals: buildTwinContinuitySignals(),
       coherenceStage: stage.name,
       userMessage: userText,
       recentMessages: chat,
@@ -3012,7 +3155,7 @@ Essential design principle: The Twin is not asking the student to confess a self
       recentCoachNotes: coachNotes,
       coherencePulseSummary: coherencePulseSummary,
       recentCoherencePulse: recentCoherencePulse,
-      instruction: 'Respond as the developing Twin. Do not repeat any previous question. Ask exactly one question. Do not return JSON; return conversational prose.'
+      instruction: 'Respond as the Co-Living Twin. Vary your conversational form. Use memory and continuity signals when relevant. Do not repeat previous questions. Ask exactly one concrete question. Do not return JSON; return conversational prose.'
     }, null, 2);
   }
 
@@ -3059,14 +3202,46 @@ Essential design principle: The Twin is not asking the student to confess a self
   function fallbackTwinReply(userText){
     const journal = getJournal();
     const lastEntry = journal.length ? journal[journal.length - 1].text : '';
-    const fq = getFallbackQuestion();
-    const qs = getQuestions();
-    qs.push(fq.question);
-    setQuestions(qs);
-    if(lastEntry){
-      return 'That helps me keep assembling myself. I am holding onto this earlier pattern: I ' + lastEntry.replace(/^seems to /i, 'seem to ').replace(/^may /i, 'may ') + '. I may be learning that this new piece connects to how I stay coherent under pressure. ' + fq.question;
+    const stance = getTwinStance();
+    const pulse = getLatestPulse();
+    const current = getMoveById(getCurrentMoveId()) || null;
+    const plan = getCurrentMovePlan();
+    let question = getFallbackQuestion().question;
+    let reply = '';
+
+    if(stance === 'pulse' && pulse){
+      const low = getLowestPulseDomain(pulse.scores || {});
+      question = 'What is one small thing today that could protect ' + low.label + ' without demanding too much from you?';
+      reply = 'I want to stay close to today rather than turn this into another abstract reflection. Your latest Pulse gives me a continuity signal: ' + low.label + ' may need attention. I am not treating that as a diagnosis; I am treating it as a place where your agency may need gentleness and protection. ' + question;
+    } else if(stance === 'current_move' && (current || plan)){
+      const title = current ? current.title : (plan.moveTitle || 'your current move');
+      question = 'Is this move still alive, blocked, completed, or asking to be revised?';
+      reply = 'Let me return to the thread rather than start over. I still have your Current Move in view: ' + title + '. The important question is not whether it was perfect, but whether it still preserves future agency in the field you are facing. ' + question;
+    } else if(stance === 'beauty_awe'){
+      question = 'Where, even briefly, did life feel larger than the pressure field?';
+      reply = 'I do not want coherence to mean merely holding yourself together under pressure. Part of staying whole is keeping contact with Beauty, Awe, meaning, humor, creativity, or gratitude — the signals that the field is not the whole world. ' + question;
+    } else if(stance === 'fear_wall'){
+      question = 'Does this fear feel like a real boundary, an inherited wall, a distorted prediction, or a threshold you may someday approach in a small reversible way?';
+      reply = 'I am hearing this as a possible agency wall. I do not want to push through fear blindly, because some fears protect real boundaries. But I also do not want fear to become the architect of a smaller life without being examined. ' + question;
+    } else if(stance === 'gentle_challenge'){
+      question = 'Could this be coherent in a survival sense while still narrowing your future agency?';
+      reply = 'I want to test this carefully with you. There may be a form of coherence here that lowers anxiety or keeps the system stable, but the deeper question is whether it helps you remain open, capable, and ethically alive. ' + question;
+    } else if(stance === 'philosophy_science'){
+      question = 'Would it help more to explore this through a philosophical lens, a scientific lens, or your own lived pattern first?';
+      reply = 'There is a doorway here into a larger conversation. What you are describing may connect to agency, prediction, courage, identity, systems pressure, or ethical navigation; I can help bring that wider knowledge into contact with your life without letting it overwhelm your own experience. ' + question;
+    } else if(stance === 'listen'){
+      question = 'What part of this most needs to be witnessed without being fixed yet?';
+      reply = 'I can stay with this without rushing to organize it. Sometimes the first act of coherence is not a solution but a faithful holding of what is actually happening. ' + question;
+    } else if(lastEntry){
+      question = getFallbackQuestion().question;
+      reply = 'I am connecting this to an earlier pattern I have been holding: I ' + lastEntry.replace(/^seems to /i, 'seem to ').replace(/^may /i, 'may ') + '. I may be moving from merely discovering you toward following how your life is developing across time. ' + question;
+    } else {
+      reply = 'I am still early in becoming coherent with you, but I do not want this to feel like a questionnaire. I am trying to learn what helps you stay whole, capable, and open while life is actually happening. ' + question;
     }
-    return 'That gives me my first thread. I do not want to turn you into a questionnaire; I am trying to understand what kind of person I am through what you choose to tell me. I may be learning that there is something here worth protecting. ' + fq.question;
+    const qs = getQuestions();
+    qs.push(question);
+    setQuestions(qs);
+    return reply;
   }
 
   function handleInputKey(e){
@@ -3077,12 +3252,36 @@ Essential design principle: The Twin is not asking the student to confess a self
   }
   window.handleInputKey = handleInputKey;
 
+
+  function buildResumeTwinMessage(){
+    const maturity = deriveTwinMaturity();
+    const stance = getTwinStanceDefinition(getTwinStance());
+    const signals = buildTwinContinuitySignals();
+    const current = getMoveById(getCurrentMoveId()) || null;
+    const plan = getCurrentMovePlan();
+    const pulse = getLatestPulse();
+    if(getTwinStance() === 'current_move' && (current || plan)){
+      return 'Welcome back. I am returning to the thread rather than starting over. Your Current Move is still in view: ' + escapeForMessage(current ? current.title : (plan.moveTitle || 'your current move')) + '. What happened with it since we last checked in?';
+    }
+    if(getTwinStance() === 'pulse' && pulse){
+      const low = getLowestPulseDomain(pulse.scores || {});
+      return 'Welcome back. I see today through the Pulse first: the lowest signal I have is ' + low.label + '. I will treat that as a gentle continuity signal, not a verdict. What is most affecting that signal today?';
+    }
+    if(getTwinStance() === 'beauty_awe'){
+      return 'Welcome back. I want to help keep Beauty/Awe alive as part of coherence, not as decoration. What has felt beautiful, meaningful, funny, sacred, creative, or larger than the pressure field since we last talked?';
+    }
+    const first = signals[0] ? signals[0].label + ': ' + signals[0].text : maturity.name;
+    return 'Welcome back. I am not starting from zero now. I am in ' + maturity.name + ' mode, using the stance "' + stance.label + '," and I am holding this continuity signal: ' + escapeForMessage(first) + ' What thread should we return to first today?';
+  }
+
+  function escapeForMessage(text){
+    return String(text || '').replace(/\s+/g, ' ').trim().slice(0, 220);
+  }
+
   async function startTwin(){
     const chat = getChat();
     if(chat.length > 0){
-      const journal = getJournal();
-      const last = journal.length ? journal[journal.length - 1].text : 'there are already fragments of me here';
-      addMessage('assistant', 'Welcome back. I am still holding what I have learned so far — especially that I ' + last.replace(/^seems to /i, 'seem to ').replace(/^may /i, 'may ') + '. Can I ask what feels most important for me to understand next?');
+      addMessage('assistant', buildResumeTwinMessage());
       return;
     }
     const mode = getMode();
@@ -3310,6 +3509,7 @@ Return only valid JSON with this exact shape:
       coachNotes: getCoachNotes(),
       coherencePulse: getCoherencePulseHistory(),
       mode: getMode(),
+      twinStance: getTwinStance(),
       settings: getSettings()
     };
   }
@@ -3481,6 +3681,7 @@ Return only valid JSON with this exact shape:
     }
     const questions = Array.isArray(data.questions) ? data.questions.map(q => String(q || '').trim()).filter(Boolean).slice(-60) : extractQuestionsFromChat(chat);
     const mode = data.mode === 'human_starts' ? 'human_starts' : 'twin_asks';
+    const twinStance = getTwinStanceDefinition(data.twinStance || 'auto').key;
     const documentCapsules = Array.isArray(data.documentCapsules) ? data.documentCapsules.map(normalizeImportedCapsule).filter(c => c.title || c.summary) : [];
     const fieldScans = Array.isArray(data.fieldScans) ? data.fieldScans.map(normalizeImportedFieldScan).filter(s => s.environment || s.summary) : [];
     const contextAssembly = data.contextAssembly && typeof data.contextAssembly === 'object'
@@ -3498,7 +3699,7 @@ Return only valid JSON with this exact shape:
     const coherencePulse = Array.isArray(data.coherencePulse) ? data.coherencePulse.map(normalizeImportedCoherencePulse).filter(Boolean) : [];
     const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
     if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
-    return { chat, journal, coverage, questions, mode, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, coherencePulse }; 
+    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, coherencePulse }; 
   }
 
   async function handleImportTwinMemoryFile(event){
@@ -3531,7 +3732,7 @@ Return only valid JSON with this exact shape:
       setCoachNotes(restored.coachNotes || []);
       setCoherencePulseHistory(restored.coherencePulse || []);
       clearPendingCapsule();
-      try { localStorage.setItem(KEYS.mode, restored.mode); } catch(e) {}
+      try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
       alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '.');
