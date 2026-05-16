@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — v3.3 Living Threads</title>
-  <meta name="description" content="Navigator v3.3 adds Living Threads: ongoing commitments, questions, practices, fears, relationships, and sources of Beauty/Awe held by the Co-Living Twin across time." />
+  <title>The Navigator — v3.5 Capability Engine Guided Introduction</title>
+  <meta name="description" content="Navigator v3.5 adds a five-lesson Capability Engine Guided Introduction with progress tracking, Learn/Reflect/Apply lesson cards, and Navigator action bridges." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -814,9 +814,9 @@
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator v3.3 · Living Threads and Commitment Companionship</div>
+        <div class="eyebrow">Navigator v3.5 · Capability Engine Guided Introduction</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
-        <div class="subtitle">This build adds Living Threads so the Twin can help hold commitments, practices, fears, inquiries, relationships, and Beauty/Awe sources across time while preserving the local-first PWA workflow.</div>
+        <div class="subtitle">This build adds a student-facing Capability Engine Guided Introduction: five Learn / Reflect / Apply lessons, progress tracking, Coach Note creation, and bridges into Pulse, Field Scans, Living Threads, Move Cards, and Twin conversation while preserving the local-first PWA workflow.</div>
       </div>
       <div class="status-cluster">
         <span class="pill"><span id="backend-dot" class="dot wait"></span><span id="backend-label">Backend not tested</span></span>
@@ -1578,8 +1578,8 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator v3.3 — Living Threads and Commitment Companionship</div>
-            <div class="card-desc">This build preserves the PWA and phone/laptop merge workflow while adding Living Threads: durable, user-approved continuity objects the Twin can revisit, discuss, pause, complete, or translate into Move Cards.</div>
+            <div class="card-title">Navigator v3.5 — Capability Engine Guided Introduction</div>
+            <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, and Co-Living Twin behavior while adding a five-lesson Capability Engine Guided Introduction: agency as capability, the Three Freedoms, survival compression, OS2 bridges, and action conversion.</div>
           </div>
           <div class="card-body">
             <div class="help-section">
@@ -1714,7 +1714,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator v3.3 — Living Threads and Commitment Companionship.</div>
+            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator v3.5 — Capability Engine Guided Introduction.</div>
           </div>
         </div>
         </aside>
@@ -1728,9 +1728,9 @@
 (function(){
   'use strict';
 
-  const ENABLE_PWA = true; // v3.3 PWA build: cache shell only, never backend AI calls.
+  const ENABLE_PWA = true; // v3.5 PWA build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator v3.3 — Living Threads and Commitment Companionship';
+  const APP_VERSION = 'Navigator v3.5 — Capability Engine Guided Introduction';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -1756,6 +1756,7 @@
     activeCoach: 'navigator_twin_v3_active_coach',
     twinStance: 'navigator_twin_v3_2_twin_stance',
     livingThreads: 'navigator_twin_v3_3_living_threads',
+    capabilityLessons: 'navigator_twin_v3_5_capability_lessons',
     uiPanels: 'navigator_twin_v2_ui_panels',
     welcomeDismissed: 'navigator_twin_v2_welcome_dismissed',
     workspace: 'navigator_twin_v2_active_workspace',
@@ -1983,6 +1984,14 @@
   function setCoherencePulseHistory(items){ setStored(KEYS.coherencePulse, Array.isArray(items) ? items.slice(-120) : []); }
   function getLivingThreads(){ return getStored(KEYS.livingThreads, []); }
   function setLivingThreads(items){ setStored(KEYS.livingThreads, Array.isArray(items) ? items.slice(-80) : []); }
+  function defaultCapabilityLessonProgress(){ return { completed:{}, reflections:{}, updatedAt:'' }; }
+  function getCapabilityLessonProgress(){
+    const raw = getStored(KEYS.capabilityLessons, defaultCapabilityLessonProgress());
+    return normalizeCapabilityLessonProgress(raw);
+  }
+  function setCapabilityLessonProgress(progress){
+    setStored(KEYS.capabilityLessons, normalizeCapabilityLessonProgress(progress));
+  }
   function getActiveCoachId(){ try { return localStorage.getItem(KEYS.activeCoach) || 'ethical-reasoning'; } catch(e) { return 'ethical-reasoning'; } }
   function setActiveCoachId(id){ try { localStorage.setItem(KEYS.activeCoach, id || 'ethical-reasoning'); } catch(e) {} }
   function getTwinStance(){ try { return localStorage.getItem(KEYS.twinStance) || 'auto'; } catch(e) { return 'auto'; } }
@@ -3909,6 +3918,7 @@ Return only valid JSON with this exact shape:
       prf22Profile: getPrf22Profile(),
       coachNotes: getCoachNotes(),
       livingThreads: getLivingThreads(),
+      capabilityLessons: getCapabilityLessonProgress(),
       coherencePulse: getCoherencePulseHistory(),
       mode: getMode(),
       twinStance: getTwinStance(),
@@ -3954,6 +3964,8 @@ Return only valid JSON with this exact shape:
         + getMoveCards().map((m,i) => (i+1) + '. ' + (m.title || 'Move Card') + ' | Field: ' + (m.fieldTitle || 'unknown') + ' | Status: ' + (m.status || 'saved') + '\nFirst action: ' + (m.firstAction || '') + '\nPreserves: ' + (m.whatPreserves || '') + '\nRisks: ' + (m.whatRisks || '')).join('\n\n')
         + '\n\n--- Living Threads ---\n'
         + formatLivingThreadsForText(getLivingThreads())
+        + '\n\n--- Capability Engine Guided Introduction ---\n'
+        + formatCapabilityLessonProgressForText(getCapabilityLessonProgress())
         + '\n\n--- Coach Notes ---\n'
         + getCoachNotes().map((n,i) => (i+1) + '. ' + (n.title || 'Coach Note') + ' [' + (n.coachTitle || n.coachId || 'coach') + ']\n' + (n.summary || '') + '\n' + (n.structuredText || '')).join('\n\n')
         + '\n\n--- Conversation ---\n'
@@ -4062,6 +4074,34 @@ Return only valid JSON with this exact shape:
 
 
 
+  function normalizeCapabilityLessonProgress(value){
+    const src = value && typeof value === 'object' ? value : {};
+    const completed = {};
+    const reflections = {};
+    if(src.completed && typeof src.completed === 'object'){
+      Object.keys(src.completed).forEach(k => {
+        const key = String(k || '').slice(0, 80);
+        if(key) completed[key] = String(src.completed[k] || new Date().toISOString()).slice(0, 80);
+      });
+    }
+    if(src.reflections && typeof src.reflections === 'object'){
+      Object.keys(src.reflections).forEach(k => {
+        const key = String(k || '').slice(0, 80);
+        if(key) reflections[key] = String(src.reflections[k] || '').slice(0, 3000);
+      });
+    }
+    return { completed, reflections, updatedAt: String(src.updatedAt || '').slice(0, 80) };
+  }
+
+  function mergeCapabilityLessonProgress(local, imported){
+    const a = normalizeCapabilityLessonProgress(local);
+    const b = normalizeCapabilityLessonProgress(imported);
+    const merged = { completed:Object.assign({}, a.completed), reflections:Object.assign({}, a.reflections), updatedAt:new Date().toISOString() };
+    Object.keys(b.completed).forEach(k => { if(!merged.completed[k]) merged.completed[k] = b.completed[k]; });
+    Object.keys(b.reflections).forEach(k => { if(!String(merged.reflections[k] || '').trim()) merged.reflections[k] = b.reflections[k]; });
+    return merged;
+  }
+
   function normalizeImportedCoachNote(n){
     if(!n || typeof n !== 'object') return null;
     return {
@@ -4119,9 +4159,10 @@ Return only valid JSON with this exact shape:
     const coachNotes = Array.isArray(data.coachNotes) ? data.coachNotes.map(normalizeImportedCoachNote).filter(Boolean) : [];
     const coherencePulse = Array.isArray(data.coherencePulse) ? data.coherencePulse.map(normalizeImportedCoherencePulse).filter(Boolean) : [];
     const livingThreads = Array.isArray(data.livingThreads) ? data.livingThreads.map(normalizeImportedLivingThread).filter(Boolean) : [];
-    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
+    const capabilityLessons = normalizeCapabilityLessonProgress(data.capabilityLessons || data.capabilityEngineLessons || null);
+    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || Object.keys(capabilityLessons.completed || {}).length || Object.keys(capabilityLessons.reflections || {}).length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
     if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
-    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, coherencePulse }; 
+    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, capabilityLessons, coherencePulse }; 
   }
 
   async function handleImportTwinMemoryFile(event){
@@ -4153,12 +4194,13 @@ Return only valid JSON with this exact shape:
       setPrf22Profile(restored.prf22Profile || null);
       setCoachNotes(restored.coachNotes || []);
       setLivingThreads(restored.livingThreads || []);
+      setCapabilityLessonProgress(restored.capabilityLessons || defaultCapabilityLessonProgress());
       setCoherencePulseHistory(restored.coherencePulse || []);
       clearPendingCapsule();
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
-      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '.');
+      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '. Capability lessons: ' + Object.keys((restored.capabilityLessons && restored.capabilityLessons.completed) || {}).length + ' completed.');
     } catch(e) {
       alert('Could not import this JSON file: ' + e.message);
       showDebug('IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
@@ -4323,6 +4365,7 @@ Return only valid JSON with this exact shape:
       moveComparisonLens,
       currentMovePlan,
       currentMovePlanAction,
+      capabilityLessons: mergeCapabilityLessonProgress(getCapabilityLessonProgress(), restored.capabilityLessons),
       importedMode: restored.mode,
       createdAt: new Date().toISOString()
     };
@@ -4401,6 +4444,7 @@ Return only valid JSON with this exact shape:
       setPrf22Profile(plan.prf22Profile || null);
       setCoachNotes(plan.collections.coachNotes.items);
       setLivingThreads(plan.collections.livingThreads.items);
+      setCapabilityLessonProgress(plan.capabilityLessons || getCapabilityLessonProgress());
       setCoherencePulseHistory(plan.collections.coherencePulse.items);
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       pendingMergeImportPlan = null;
@@ -5676,12 +5720,325 @@ Return only valid JSON with this shape:
       tags:['research','writing','next move'],
       outputs:'Research theme map, unresolved questions, audience fit, next writing move, capsule suggestions.',
       steps:['State the project and intended audience.','Identify the central thesis or problem.','Name the strongest contribution.','Identify missing evidence or conceptual gaps.','Choose the next section or next research move.','Suggest which documents should become capsules.']
+    },
+    {
+      id:'capability-engine', title:'Capability Engine Coach', category:'Applications Coach',
+      purpose:'Teach the Capability Engine through a five-lesson guided introduction, then translate it into practical Navigator use: status discipline, Three Freedoms scoring, EBB case analysis, functional equivalence, and simulation-ready variables.',
+      tags:['agency','EBB','simulation'],
+      outputs:'Lesson reflections, status map, Three Freedoms scores, capability/freedom diagnosis, stress-coherence map, functional-equivalence bridge, Navigator actions, Situation Mapper input.',
+      steps:['Complete one guided Learn / Reflect / Apply lesson if the vocabulary is new.','Name the situation, course case, workplace pressure, research issue, or life field you want to examine.','Practice formal status discipline by classifying one claim as evidence, formal analogy/modeling hypothesis, pedagogical metaphor, or user-specific inference.','Score the three capability freedoms: movement/exit, refusal/dissent, and social reconfiguration/redesign.','Connect stress, Pulse signals, Field Scans, and ATCF/coherence preservation without making clinical claims.','Identify OS2 or functional-equivalence bridges across different PRFs.','Translate the insight into one Navigator action: Field Scan, Living Thread, Move Card, Current Move, Document Capsule, or Twin conversation.','Prepare situation-mapper variables for future UCP/PA simulation work.']
     }
   ];
 
   let currentCoachDraft = null;
 
   function getCoachDef(id){ return COACH_DEFS.find(c => c.id === id) || COACH_DEFS[1]; }
+
+  const EBB_CASES = {
+    custom:{ title:'My own situation', prompt:'I want to examine a real situation in my life where my agency feels constrained. I need to map the three freedoms, identify the formal status of my claims, and prepare a situation-mapper input for future simulation.', movement:3, refusal:3, redesign:3, stress:'moderate', suppression:'moderate', biobond:'unknown', os2:'possible' },
+    challenger:{ title:'Boisjoly / Challenger', prompt:'Use the Boisjoly / Challenger case to examine how an authority-weighted institutional architecture can suppress empirical evidence, narrow refusal/dissent freedom, and create a high suppression gap under launch pressure.', movement:2, refusal:1, redesign:1, stress:'high', suppression:'high', biobond:'fragile', os2:'fragile' },
+    hanna:{ title:'Hanna / Captivity', prompt:'Use the Hanna captivity case to examine how coercive conditions restrict movement freedom while sacred-boundary and relational coherence may preserve identity integrity under extreme pressure.', movement:0, refusal:2, redesign:1, stress:'extreme', suppression:'high', biobond:'partial', os2:'fragile' },
+    franklin:{ title:'Franklin / Practical Wisdom', prompt:'Use Franklin as a case for examining disciplined self-formation, civic capability, iterative practice, and the redesign of personal and social routines across time.', movement:4, refusal:3, redesign:4, stress:'moderate', suppression:'low', biobond:'strong', os2:'strong' },
+    maathai:{ title:'Maathai / Green Belt Movement', prompt:'Use Wangari Maathai and the Green Belt Movement to examine how ecological repair, women\'s agency, local action, and functional equivalence can create OS2 bridges across different communities and institutions.', movement:3, refusal:4, redesign:5, stress:'high', suppression:'moderate', biobond:'strong', os2:'strong' },
+    ai_pressure:{ title:'AI / Student Deadline Pressure', prompt:'Use a student deadline-pressure case to examine survival compression, performance pressure, AI-button temptation, reduced temporal horizon, and the difference between academic dishonesty as a rule violation and agency suppression as a field condition.', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate', biobond:'low', os2:'possible' },
+    workplace:{ title:'Workplace / Moral Stress', prompt:'Use a workplace moral-stress case to examine the difference between personal failure and institutional suppression, focusing on documentation, dissent, boundary-setting, BioBond support, and career/identity protection.', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate_high', biobond:'partial', os2:'possible' }
+  };
+
+  function shouldShowCapabilityEbbPanel(id){ return id === 'capability-engine' || id === 'ebb-chapter-template'; }
+
+  function scoreOptions(selected){
+    let html = '';
+    for(let i=0;i<=5;i++) html += '<option value="' + i + '"' + (String(selected) === String(i) ? ' selected' : '') + '>' + i + ' / 5</option>';
+    return html;
+  }
+
+  const CAPABILITY_ENGINE_LESSONS = [
+    {
+      id:'agency-capability',
+      title:'1. Agency Is a Capability, Not Just a Trait',
+      shortTitle:'Agency as capability',
+      learn:'Agency is not simply willpower or personality. In Navigator language, agency is a capability that depends on the person, their PRF, their body state, available information, relationships, institutions, time pressure, and possible routes for action. The Capability Engine asks: what makes action possible here, and what blocks or suppresses it?',
+      reflect:'Name one situation where you first judged yourself as lacking discipline, courage, or clarity. What field conditions may also have shaped what was possible?',
+      apply:'Create a Journal seed or Field Scan that separates personal capacity from field conditions. Do not excuse or blame; map the conditions that route or suppress agency.',
+      prompt:'I am learning that agency is a capability, not just a trait. Help me examine one situation by separating my own PRF, my body/stress state, and the field conditions that made action easier or harder.'
+    },
+    {
+      id:'three-freedoms',
+      title:'2. The Three Freedoms and Your Field',
+      shortTitle:'Three Freedoms',
+      learn:'The Capability Engine begins with three practical freedoms: Movement / Exit Freedom, Refusal / Dissent Freedom, and Social Reconfiguration / Redesign Freedom. These are not abstract ideals. They ask whether the agent can move, pause or disagree, and reshape the situation enough for better action to become possible.',
+      reflect:'In your current school, work, family, research, or health field, which freedom is lowest: movement, refusal, or redesign? What score from 0 to 5 would you give it?',
+      apply:'Use the EBB Capability Practice panel to score the Three Freedoms. Then generate the Situation Mapper preview and use its continuation question.',
+      prompt:'Help me score my Three Freedoms in one situation: movement/exit, refusal/dissent, and redesign/reconfiguration. Then help me identify the lowest freedom and one reversible next move.'
+    },
+    {
+      id:'stress-compression',
+      title:'3. Stress, Survival Compression, and Dark Coherence',
+      shortTitle:'Stress and dark coherence',
+      learn:'Stress can narrow the field of possible action. Survival compression occurs when short-term safety, grades, money, approval, or threat become so dominant that the person can no longer easily access their wider values. Dark coherence names a pattern that may feel stable because it keeps the system going, but does so by shrinking agency, beauty, relationship, truth, or future possibility.',
+      reflect:'Where do you become more automatic, defensive, avoidant, or compliant under pressure? What does your Daily Pulse or recent life pattern suggest may be narrowing?',
+      apply:'Save a Daily Pulse, then ask the Twin to interpret it cautiously. Consider creating a Fear Wall or Practice Living Thread.',
+      prompt:'Help me examine whether stress or survival compression is narrowing my agency. Please treat this carefully, not clinically. Connect it to Pulse signals, possible dark coherence, and one agency-preserving action.'
+    },
+    {
+      id:'functional-equivalence',
+      title:'4. Functional Equivalence and OS2 Bridges',
+      shortTitle:'OS2 bridges',
+      learn:'People do not need identical worldviews to cooperate. OS1 refers to shared meaning, worldview, or deep interpretation. OS2 refers to task-level coordination: different PRFs may still coordinate around a shared capability, such as reducing harm, protecting evidence, preserving dignity, or keeping a future option open. Functional equivalence allows cooperation without semantic collapse.',
+      reflect:'Name a case where two people or groups disagree deeply but might still coordinate around one practical capability. What bridge could preserve difference while enabling action?',
+      apply:'Use the Ethical Reasoning Coach or Capability Engine Coach to identify one OS2 bridge in a real or course case.',
+      prompt:'Help me distinguish OS1 disagreement from OS2 coordination in this situation. Where might functional equivalence allow cooperation without forcing false consensus?'
+    },
+    {
+      id:'coherence-to-action',
+      title:'5. From Coherence to Action',
+      shortTitle:'Coherence to action',
+      learn:'Navigator reflection should not remain only in insight. A coherent next move is a small causal sequence that preserves future agency while testing reality. The user can move from reflection to Field Scan, Living Thread, Move Card, Current Move Plan, Document Capsule, Coach Note, or Twin conversation.',
+      reflect:'What is one insight from this guided introduction that should become a protected commitment, field scan, or first small move?',
+      apply:'Create one Living Thread or Move Card. Then ask the Twin to help you hold it without nagging, over-controlling, or deciding for you.',
+      prompt:'Help me convert one Capability Engine insight into a concrete Navigator action: Field Scan, Living Thread, Move Card, Current Move Plan, or Twin conversation. Keep it small, reversible, and agency-preserving.'
+    }
+  ];
+
+  function getCapabilityLesson(id){ return CAPABILITY_ENGINE_LESSONS.find(l => l.id === id) || CAPABILITY_ENGINE_LESSONS[0]; }
+
+  function formatCapabilityLessonProgressForText(progress){
+    progress = normalizeCapabilityLessonProgress(progress || getCapabilityLessonProgress());
+    const completed = progress.completed || {};
+    const reflections = progress.reflections || {};
+    return CAPABILITY_ENGINE_LESSONS.map((l,i) => {
+      return (i+1) + '. ' + l.shortTitle + ' — ' + (completed[l.id] ? 'completed' : 'open') + '\nReflection: ' + (reflections[l.id] || '[none saved]');
+    }).join('\n\n');
+  }
+
+  function getCapabilityGuidedIntroHtml(){
+    const progress = getCapabilityLessonProgress();
+    const completed = progress.completed || {};
+    const reflections = progress.reflections || {};
+    const doneCount = CAPABILITY_ENGINE_LESSONS.filter(l => completed[l.id]).length;
+    const percent = Math.round((doneCount / CAPABILITY_ENGINE_LESSONS.length) * 100);
+    const firstOpen = (CAPABILITY_ENGINE_LESSONS.find(l => !completed[l.id]) || CAPABILITY_ENGINE_LESSONS[0]).id;
+    return '<div id="capability-guided-intro" class="coach-primer-box" style="margin-top:12px;">'
+      + '<div class="card-title-row"><div><strong>Capability Engine Guided Introduction</strong><br><span class="muted">Five short lessons that teach the vocabulary before asking the user to apply it.</span></div><span class="coach-tag">' + doneCount + ' / ' + CAPABILITY_ENGINE_LESSONS.length + ' complete</span></div>'
+      + '<div class="progress"><div style="width:' + percent + '%"></div></div>'
+      + '<div class="privacy-note"><strong>Course use:</strong> Each lesson follows Learn / Reflect / Apply. Reflections are stored locally and can be saved as Coach Notes, sent to the Twin, or used to start a Field Scan, Living Thread, or Move Card.</div>'
+      + CAPABILITY_ENGINE_LESSONS.map(l => {
+          const isDone = !!completed[l.id];
+          const isOpen = l.id === firstOpen && !isDone;
+          return '<details class="help-note" ' + (isOpen ? 'open' : '') + '><summary><strong>' + escapeHtml(l.title) + '</strong> <span class="coach-tag">' + (isDone ? 'completed' : 'open') + '</span></summary>'
+            + '<div class="help-note-body">'
+            + '<div class="coach-layout">'
+            + '<div><div class="guided-card"><div class="guided-card-title">Learn</div><div class="guided-card-text">' + escapeHtml(l.learn) + '</div></div>'
+            + '<div class="guided-card"><div class="guided-card-title">Apply</div><div class="guided-card-text">' + escapeHtml(l.apply) + '</div></div></div>'
+            + '<div><div class="field"><label for="cap-lesson-reflection-' + l.id + '">Reflect</label><textarea id="cap-lesson-reflection-' + l.id + '" placeholder="' + escapeAttr(l.reflect) + '">' + escapeHtml(reflections[l.id] || '') + '</textarea></div>'
+            + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="saveCapabilityLessonReflection(\'' + l.id + '\')">Save Reflection</button><button class="btn small primary" type="button" onclick="completeCapabilityLesson(\'' + l.id + '\')">Mark Complete</button><button class="btn small ghost" type="button" onclick="useCapabilityLessonPrompt(\'' + l.id + '\')">Load Prompt</button><button class="btn small ghost" type="button" onclick="saveCapabilityLessonAsCoachNote(\'' + l.id + '\')">Save Coach Note</button><button class="btn small purple" type="button" onclick="askTwinAboutCapabilityLesson(\'' + l.id + '\')">Ask Twin</button></div>'
+            + '</div></div></div></details>';
+        }).join('')
+      + '</div>';
+  }
+
+  function capabilityLessonReflectionValue(id){
+    const el = document.getElementById('cap-lesson-reflection-' + id);
+    return el ? el.value.trim().slice(0, 3000) : (getCapabilityLessonProgress().reflections[id] || '');
+  }
+
+  function saveCapabilityLessonReflection(id){
+    const progress = getCapabilityLessonProgress();
+    progress.reflections[id] = capabilityLessonReflectionValue(id);
+    progress.updatedAt = new Date().toISOString();
+    setCapabilityLessonProgress(progress);
+    const out = document.getElementById('coach-output');
+    if(out) out.textContent = 'Saved reflection for ' + getCapabilityLesson(id).title + '. It remains local unless you export JSON or send it to the Twin.';
+    renderCoaches();
+  }
+  window.saveCapabilityLessonReflection = saveCapabilityLessonReflection;
+
+  function completeCapabilityLesson(id){
+    const progress = getCapabilityLessonProgress();
+    progress.reflections[id] = capabilityLessonReflectionValue(id);
+    progress.completed[id] = new Date().toISOString();
+    progress.updatedAt = new Date().toISOString();
+    setCapabilityLessonProgress(progress);
+    renderCoaches();
+    const out = document.getElementById('coach-output');
+    if(out) out.textContent = 'Marked complete: ' + getCapabilityLesson(id).title + '. Next: use the next open lesson or save this reflection as a Coach Note.';
+  }
+  window.completeCapabilityLesson = completeCapabilityLesson;
+
+  function useCapabilityLessonPrompt(id){
+    const lesson = getCapabilityLesson(id);
+    setActiveCoachId('capability-engine');
+    const input = document.getElementById('coach-input');
+    const reflection = capabilityLessonReflectionValue(id);
+    if(input){
+      input.value = lesson.prompt + (reflection ? '\n\nMy reflection: ' + reflection : '');
+      input.focus();
+      input.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+    const out = document.getElementById('coach-output');
+    if(out) out.textContent = 'Loaded the lesson prompt into the Coach Session Arena. You can build a local note or ask the AI-assisted coach.';
+  }
+  window.useCapabilityLessonPrompt = useCapabilityLessonPrompt;
+
+  function buildCapabilityLessonNoteText(id){
+    const lesson = getCapabilityLesson(id);
+    const reflection = capabilityLessonReflectionValue(id);
+    return 'Capability Engine Guided Introduction — ' + lesson.title + '\n\nFormal status: pedagogical guide for learning the Capability Engine; user reflection is a user-specific Navigator inference unless separately supported.\n\nLearn:\n' + lesson.learn + '\n\nReflect Prompt:\n' + lesson.reflect + '\n\nUser Reflection:\n' + (reflection || '[No reflection saved yet.]') + '\n\nApply:\n' + lesson.apply + '\n\nNavigator Bridge:\nThis lesson can become a Coach Note, Journal seed, Field Scan, Living Thread, Move Card, Current Move Plan, or Twin conversation.';
+  }
+
+  function saveCapabilityLessonAsCoachNote(id){
+    const lesson = getCapabilityLesson(id);
+    const text = buildCapabilityLessonNoteText(id);
+    const note = { id:uid('coachnote'), coachId:'capability-engine', coachTitle:'Capability Engine Coach', title:'Capability Guided Lesson — ' + lesson.shortTitle, input:lesson.prompt, mode:'quick', contextUsed:{ guidedLesson:id }, summary:summarizeCoachText(text), structuredText:text, source:'guided-introduction', createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), savedAt:new Date().toISOString() };
+    setCoachNotes(getCoachNotes().concat([note]));
+    currentCoachDraft = Object.assign({}, note);
+    const out = document.getElementById('coach-output');
+    if(out) out.textContent = text + '\n\n[Saved as Coach Note.]';
+    renderCoaches();
+    renderWorkspaceDashboard();
+  }
+  window.saveCapabilityLessonAsCoachNote = saveCapabilityLessonAsCoachNote;
+
+  function askTwinAboutCapabilityLesson(id){
+    const lesson = getCapabilityLesson(id);
+    const reflection = capabilityLessonReflectionValue(id);
+    showWorkspace('twin');
+    const input = document.getElementById('chat-input');
+    if(input){
+      input.value = 'I am working through the Capability Engine Guided Introduction. Please help me reflect on this lesson as my Co-Living Twin. Do not decide for me. Connect the lesson to my Pulse, PRF, Field Scans, Living Threads, and Current Move only if available. Ask one question that helps me turn the insight into a coherent next move.\n\nLESSON: ' + lesson.title + '\nLEARN: ' + lesson.learn + '\nREFLECTION: ' + (reflection || '[No reflection written yet.]') + '\nAPPLY: ' + lesson.apply;
+      input.focus();
+    }
+  }
+  window.askTwinAboutCapabilityLesson = askTwinAboutCapabilityLesson;
+
+  function getCapabilityEbbPanelHtml(id){
+    if(!shouldShowCapabilityEbbPanel(id)) return '';
+    return '<div id="capability-ebb-panel" class="coach-primer-box" style="margin-top:12px;">'
+      + '<strong>EBB Capability Practice + Situation Mapper Prep</strong><br>'
+      + '<span class="muted">Use this panel when the Capability Engine or EBB template needs concrete course scaffolding. It teaches status discipline, scores the Three Freedoms, and prepares simulation-ready variables.</span>'
+      + '<div class="coach-layout" style="margin-top:12px;">'
+      + '<div>'
+      + '<div class="field"><label for="ebb-case-select">EBB case connector</label><select id="ebb-case-select" onchange="applyCapabilityEbbCase(this.value)">'
+      + Object.keys(EBB_CASES).map(k => '<option value="' + k + '">' + escapeHtml(EBB_CASES[k].title) + '</option>').join('')
+      + '</select></div>'
+      + '<div class="field"><label for="ebb-status-claim">Guided status-map practice: name one claim</label><textarea id="ebb-status-claim" placeholder="Example: Chronic stress can narrow deliberative capacity; or cellular competence is a useful analogy for distributed agency."></textarea></div>'
+      + '<div class="field"><label for="ebb-status-type">Classify that claim</label><select id="ebb-status-type">'
+      + '<option value="Established / well-supported evidence">Established / well-supported evidence</option>'
+      + '<option value="Formal analogy or modeling hypothesis">Formal analogy or modeling hypothesis</option>'
+      + '<option value="Pedagogical metaphor">Pedagogical metaphor</option>'
+      + '<option value="User-specific Navigator inference">User-specific Navigator inference</option>'
+      + '</select></div>'
+      + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="generateSituationMapperPreview()">Preview Situation Mapper Input</button><button class="btn small ghost" type="button" onclick="appendSituationMapperToCoachInput()">Append to Prompt</button></div>'
+      + '</div><div>'
+      + '<div class="field"><label>Three Capability Freedoms</label><div class="coach-context-grid">'
+      + '<label>Movement / Exit <select id="ebb-movement-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
+      + '<label>Refusal / Dissent <select id="ebb-refusal-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
+      + '<label>Redesign / Reconfiguration <select id="ebb-redesign-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
+      + '</div></div>'
+      + '<div class="field"><label>Simulation-relevant field signals</label><div class="coach-context-grid">'
+      + '<label>Stress load <select id="ebb-stress-select"><option value="low">low</option><option value="moderate" selected>moderate</option><option value="high">high</option><option value="extreme">extreme</option></select></label>'
+      + '<label>Suppression gap <select id="ebb-suppression-select"><option value="low">low</option><option value="moderate" selected>moderate</option><option value="moderate_high">moderate-high</option><option value="high">high</option></select></label>'
+      + '<label>BioBond support <select id="ebb-biobond-select"><option value="low">low</option><option value="partial">partial</option><option value="fragile">fragile</option><option value="strong">strong</option><option value="unknown" selected>unknown</option></select></label>'
+      + '<label>OS2 bridge potential <select id="ebb-os2-select"><option value="low">low</option><option value="fragile">fragile</option><option value="possible" selected>possible</option><option value="strong">strong</option></select></label>'
+      + '</div></div>'
+      + '<div id="ebb-continuation-question" class="privacy-note"></div>'
+      + '<pre id="ebb-sim-output" class="coach-output" style="max-height:220px;white-space:pre-wrap;">Situation Mapper preview will appear here.</pre>'
+      + '</div></div></div>';
+  }
+
+  function setElValue(id, value){ const el = document.getElementById(id); if(el) el.value = value; }
+
+  function applyCapabilityEbbCase(caseId){
+    const c = EBB_CASES[caseId] || EBB_CASES.custom;
+    const input = document.getElementById('coach-input');
+    if(input){ input.value = c.prompt; input.focus(); }
+    setElValue('ebb-movement-score', c.movement);
+    setElValue('ebb-refusal-score', c.refusal);
+    setElValue('ebb-redesign-score', c.redesign);
+    setElValue('ebb-stress-select', c.stress);
+    setElValue('ebb-suppression-select', c.suppression);
+    setElValue('ebb-biobond-select', c.biobond);
+    setElValue('ebb-os2-select', c.os2);
+    setElValue('ebb-status-claim', caseId === 'challenger' ? 'The Thiokol/NASA decision architecture down-weighted empirical engineering evidence under authority and schedule pressure.' : caseId === 'maathai' ? 'Tree planting can function as an OS2 bridge because different communities may support the same capability without sharing the same ultimate worldview.' : 'This situation can be mapped by distinguishing evidence, formal analogy, metaphor, and user-specific inference.');
+    setElValue('ebb-status-type', caseId === 'maathai' ? 'Formal analogy or modeling hypothesis' : 'User-specific Navigator inference');
+    updateCapabilityContinuation();
+    generateSituationMapperPreview();
+  }
+  window.applyCapabilityEbbCase = applyCapabilityEbbCase;
+
+  function getCapabilityEbbInputs(){
+    function v(id, fallback){ const el = document.getElementById(id); return el ? el.value : fallback; }
+    const caseId = v('ebb-case-select','custom');
+    return {
+      caseId,
+      caseTitle: (EBB_CASES[caseId] || EBB_CASES.custom).title,
+      statusClaim: v('ebb-status-claim',''),
+      statusType: v('ebb-status-type','User-specific Navigator inference'),
+      movementFreedom: Number(v('ebb-movement-score',3)),
+      refusalFreedom: Number(v('ebb-refusal-score',3)),
+      redesignFreedom: Number(v('ebb-redesign-score',3)),
+      stressLoad: v('ebb-stress-select','moderate'),
+      suppressionGap: v('ebb-suppression-select','moderate'),
+      bioBondSupport: v('ebb-biobond-select','unknown'),
+      os2BridgePotential: v('ebb-os2-select','possible')
+    };
+  }
+
+  function getLowestFreedom(ebb){
+    const rows = [
+      { key:'movement_freedom', label:'Movement / Exit Freedom', score:ebb.movementFreedom },
+      { key:'refusal_freedom', label:'Refusal / Dissent Freedom', score:ebb.refusalFreedom },
+      { key:'redesign_freedom', label:'Social Reconfiguration / Redesign Freedom', score:ebb.redesignFreedom }
+    ];
+    rows.sort((a,b) => a.score - b.score);
+    return rows[0];
+  }
+
+  function getContextualCapabilityQuestion(ebb){
+    const low = getLowestFreedom(ebb);
+    if(low.key === 'movement_freedom') return 'Movement/Exit is the lowest freedom. What is one reversible way to increase your room to move, seek an alternative, or change your position without creating unnecessary risk?';
+    if(low.key === 'refusal_freedom') return 'Refusal/Dissent is the lowest freedom. Where can you safely pause, question, document, ask for clarification, or express concern with support rather than isolation?';
+    return 'Redesign/Reconfiguration is the lowest freedom. What small rule, routine, relationship, expectation, or protocol could be reshaped so better action becomes possible?';
+  }
+
+  function buildSituationMapperInput(){
+    const ebb = getCapabilityEbbInputs();
+    return {
+      case: ebb.caseTitle,
+      formal_status_practice: { claim: ebb.statusClaim || '[student/user should name one claim]', classification: ebb.statusType },
+      movement_freedom: ebb.movementFreedom,
+      refusal_freedom: ebb.refusalFreedom,
+      redesign_freedom: ebb.redesignFreedom,
+      stress_load: ebb.stressLoad,
+      suppression_gap: ebb.suppressionGap,
+      bioBond_support: ebb.bioBondSupport,
+      os2_bridge_potential: ebb.os2BridgePotential,
+      lowest_freedom: getLowestFreedom(ebb),
+      continuation_question: getContextualCapabilityQuestion(ebb),
+      notes: 'Prepared by Navigator Capability Engine Coach. This is simulation-ready scaffolding, not a diagnosis or prediction.'
+    };
+  }
+
+  function generateSituationMapperPreview(){
+    const out = document.getElementById('ebb-sim-output');
+    const q = document.getElementById('ebb-continuation-question');
+    const obj = buildSituationMapperInput();
+    if(out) out.textContent = JSON.stringify(obj, null, 2);
+    if(q) q.innerHTML = '<strong>Contextual continuation question:</strong> ' + escapeHtml(obj.continuation_question);
+  }
+  window.generateSituationMapperPreview = generateSituationMapperPreview;
+
+  function updateCapabilityContinuation(){ generateSituationMapperPreview(); }
+  window.updateCapabilityContinuation = updateCapabilityContinuation;
+
+  function appendSituationMapperToCoachInput(){
+    const input = document.getElementById('coach-input');
+    if(!input) return;
+    const obj = buildSituationMapperInput();
+    input.value = (input.value ? input.value + '\n\n' : '') + 'Situation Mapper Input:\n' + JSON.stringify(obj, null, 2);
+    input.focus();
+  }
+  window.appendSituationMapperToCoachInput = appendSituationMapperToCoachInput;
 
   function renderCoaches(){
     const catalog = document.getElementById('coach-catalog');
@@ -5704,8 +6061,12 @@ Return only valid JSON with this shape:
       detail.innerHTML = '<div class="guided-card"><div class="guided-card-title">' + escapeHtml(active.title) + '</div>'
         + '<div class="guided-card-text">' + escapeHtml(active.purpose) + '</div>'
         + '<div class="coach-primer-box"><strong>Plain-language primer:</strong><br>' + escapeHtml(getCoachPrimerText(active.id)) + '</div>'
+        + (active.id === 'capability-engine' ? getCapabilityGuidedIntroHtml() : '')
         + '<div class="coach-step-list">' + active.steps.map((s,i) => '<div class="coach-step"><strong>' + (i+1) + '.</strong> ' + escapeHtml(s) + '</div>').join('') + '</div>'
-        + '<div class="privacy-note"><strong>Output:</strong> ' + escapeHtml(active.outputs) + '</div></div>';
+        + '<div class="privacy-note"><strong>Output:</strong> ' + escapeHtml(active.outputs) + '</div>'
+        + getCapabilityEbbPanelHtml(active.id)
+        + '</div>';
+      setTimeout(() => { if(shouldShowCapabilityEbbPanel(active.id)) generateSituationMapperPreview(); }, 0);
     }
     const notes = getCoachNotes();
     if(summary) summary.textContent = notes.length ? notes.length + ' saved Coach Notes. Latest: ' + (notes[notes.length - 1].title || 'Coach Note') : 'No Coach Notes saved yet.';
@@ -5733,6 +6094,9 @@ Return only valid JSON with this shape:
     if(id === 'research-project'){
       return 'This coach helps turn a project into a map: central problem, contribution, audience, missing evidence, next section, and next research move. It is useful with Document Capsules and PRF profile context.';
     }
+    if(id === 'capability-engine'){
+      return 'This coach translates the Capability Engine into Navigator practice and EBB classroom use. It treats agency as a capability distributed across body, meaning, field, relationships, and social affordances. The v3.5 guided introduction adds five Learn / Reflect / Apply lessons so students can learn the vocabulary before using the analysis panel: agency as capability, the Three Freedoms, stress and dark coherence, functional equivalence and OS2 bridges, and moving from coherence to action. It does not make medical, therapeutic, or diagnostic claims.';
+    }
     return 'This template is a placeholder for future EBB chapter-specific coaches. It gives the structure of a chapter coach without loading the full curriculum yet.';
   }
 
@@ -5748,6 +6112,9 @@ Return only valid JSON with this shape:
     }
     if(id === 'research-project'){
       return 'I am developing a research project and need help clarifying its central contribution, audience, missing evidence, and next writing move.';
+    }
+    if(id === 'capability-engine'){
+      return 'I want to examine a situation where my agency feels constrained. Help me use the Capability Engine carefully: classify one claim by formal status, score movement freedom, refusal freedom, and redesign freedom, connect the situation to my Pulse/Field Scans/Living Threads, identify an OS2 or functional-equivalence bridge, and prepare situation-mapper variables for future UCP/PA simulation.';
     }
     return 'I want to apply a chapter concept to my lived experience and a concrete case. Help me identify key terms, a case, a Field Scan suggestion, and a reflection outline.';
   }
@@ -5812,44 +6179,60 @@ Return only valid JSON with this shape:
     if(def.id === 'ethical-reasoning'){
       base += '\n\nFor the Ethical Reasoning Coach, explicitly include: (1) ethical issue recognition, (2) the user\'s PRF perspective, (3) other possible PRF perspectives, (4) deduction, induction, abduction, and analogy as reasoning lenses, (5) common logical fallacies and cognitive distortions relevant to ethical reasoning, including straw man, false dilemma, ad hominem, appeal to authority, slippery slope, hasty generalization, confirmation bias, equivocation, red herring, and is/ought confusion, (6) OS1 shared-meaning conflict versus OS2 task-level coordination, and (7) one agency-preserving next move. Make clear that OS2 coordination is not forced OS1 agreement.';
     }
+    if(def.id === 'capability-engine'){
+      base += '\n\nFor the Capability Engine Coach, use strict status discipline: distinguish established evidence, formal analogy/modeling hypothesis, pedagogical metaphor, and user-specific Navigator inference. Teach before applying when the user is in guided-introduction mode. Include the Three Freedoms, stress/survival compression, functional equivalence, OS2 bridges, and one Navigator action. Do not make medical, therapeutic, diagnostic, legal, or predictive claims.';
+    }
+    if(def.id === 'core-traditions'){
+      base += '\n\nFor the Core Traditions Coach, compare traditions as lenses rather than declaring a winner. Show what each tradition notices, what it may miss, and where different theories can support functionally equivalent action.';
+    }
+    if(def.id === 'critical-thinking'){
+      base += '\n\nFor the Critical Thinking Coach, separate issue, evidence, assumptions, alternatives, implications, and justified conclusion. Be explicit about warrant strength and what evidence would change the conclusion.';
+    }
+    if(def.id === 'research-project'){
+      base += '\n\nFor the Research Project Coach, help clarify contribution, audience, missing evidence, section structure, and one next writing or research move. Preserve the user\'s authorship.';
+    }
     return base;
   }
 
-  function buildCoachPrompt(def, input, mode, sel){
-    return JSON.stringify({
-      coach: { id:def.id, title:def.title, purpose:def.purpose, steps:def.steps, outputs:def.outputs },
-      mode: mode,
-      userTask: input,
-      selectedContextNotice: 'Only the selected context below is included. Treat it as partial and revisable.',
-      context: gatherCoachContext(sel),
-      requestedFormat: 'Use clear headings. Provide a structured Coach Note with: Situation/Task, Key Distinctions, Reasoning or Framework Map, Risks/Blind Spots, OS1/OS2 or Coordination Notes when relevant, Possible Next Move, and One Question to Continue.'
-    }, null, 2);
+
+
+  function buildCapabilityEngineLocalNote(input, mode, sel){
+    const pulse = getLatestPulse();
+    const pulseLow = pulse ? getLowestPulseDomain(pulse.scores || {}) : null;
+    const activeThreads = getLivingThreads().filter(t => (t.status || 'active') === 'active').slice(-5);
+    const ebb = getCapabilityEbbInputs();
+    const sim = buildSituationMapperInput();
+    const fieldCount = getFieldScans().length;
+    const moveCount = getMoveCards().length;
+    const progress = getCapabilityLessonProgress();
+    const completed = CAPABILITY_ENGINE_LESSONS.filter(l => progress.completed && progress.completed[l.id]).map(l => l.shortTitle);
+    return 'Capability Engine Coach Note — Guided Introduction + EBB Practice\n\nSituation / Field / Question:\n' + (input || '[Name the life field, course case, workplace pressure, research issue, or agency challenge.]')
+      + '\n\nGuided Introduction Progress:\nCompleted lessons: ' + (completed.length ? completed.join('; ') : 'none yet') + '\n' + formatCapabilityLessonProgressForText(progress)
+      + '\n\nEBB Case Connector:\nSelected case: ' + ebb.caseTitle
+      + '\n\nGuided Formal Status Map:\nClaim: ' + (ebb.statusClaim || '[Name one claim from the case or your own situation.]')
+      + '\nClassification: ' + ebb.statusType
+      + '\nWhy this matters: students should not treat evidence, formal analogy, pedagogical metaphor, and user-specific inference as if they had the same warrant.'
+      + '\n\nThree Capability Freedoms — Scores:\nMovement / Exit Freedom: ' + ebb.movementFreedom + ' / 5\nRefusal / Dissent Freedom: ' + ebb.refusalFreedom + ' / 5\nSocial Reconfiguration / Redesign Freedom: ' + ebb.redesignFreedom + ' / 5'
+      + '\n\nCapability Interpretation:\nLowest freedom: ' + sim.lowest_freedom.label + ' (' + sim.lowest_freedom.score + ' / 5).\n' + sim.continuation_question
+      + '\n\nStress, Pulse, and Coherence:\nField stress load: ' + ebb.stressLoad + '. Suppression gap: ' + ebb.suppressionGap + '. BioBond support: ' + ebb.bioBondSupport + '. OS2 bridge potential: ' + ebb.os2BridgePotential + '.\nWhat stress load, survival compression, or dark coherence may be present? ' + (pulse ? ('Latest Pulse average: ' + Number(pulse.avg || 0).toFixed(1) + '; lowest signal: ' + (pulseLow ? pulseLow.label : 'not available') + '.') : 'No Daily Pulse reading is available yet.')
+      + '\n\nFunctional Equivalence / OS2 Bridge:\nWhere might different PRFs coordinate around a shared capability or task without requiring full OS1 agreement? What minimal bridge preserves dignity, evidence, safety, agency, relationship, or future possibility?'
+      + '\n\nNavigator Actions:\nSuggested next action: choose one.\n1. Create or update a Field Scan.\n2. Start a Living Thread.\n3. Generate a Move Card.\n4. Select or revise a Current Move Plan.\n5. Create a Document Capsule.\n6. Ask the Twin for a Co-Living reflection.\nActive Living Threads currently available: ' + (activeThreads.length ? activeThreads.map(t => t.title).join('; ') : 'none') + '.\nContext available: ' + fieldCount + ' field scans, ' + moveCount + ' move cards.'
+      + '\n\nSituation Mapper Input for Future UCP/PA Modeling:\n' + JSON.stringify(sim, null, 2)
+      + '\n\nOne Question to Continue:\n' + sim.continuation_question;
   }
 
   function buildLocalStructuredText(def, input, mode, sel){
+    if(def.id === 'capability-engine') return buildCapabilityEngineLocalNote(input, mode, sel);
     const ctx = gatherCoachContext(sel);
-    const prfActive = !!(ctx.prf22Profile && ctx.prf22Profile.active !== false);
-    const fieldCount = ctx.fieldMap && ctx.fieldMap.scans ? ctx.fieldMap.scans.length : 0;
-    const moveCount = ctx.moves && ctx.moves.saved ? ctx.moves.saved.length : 0;
-    if(def.id === 'ethical-reasoning'){
-      return 'Ethical Reasoning Coach Note\n\nSituation / Ethical Issue:\n' + (input || '[Add the ethical situation here.]')
-        + '\n\nMy PRF Perspective:\nWhat feels obvious or morally salient from inside my own PRF? ' + (prfActive ? 'A PRF-22 profile is available as a starting map, not a verdict.' : 'No PRF-22 profile is active; use conversation and self-description instead.')
-        + '\n\nOther PRF Perspectives:\nWho else is involved, and how might their meanings, loyalties, duties, fears, evidence policies, or constraints differ from mine?'
-        + '\n\nReasoning Lenses:\nDeduction: What follows if a principle, duty, right, or rule is accepted? Limit: a bad or incomplete principle can mislead.\nInduction: What patterns from experience or cases suggest likely outcomes? Limit: past patterns may not fit this case.\nAbduction: What is the best explanation of what is happening? Limit: my PRF may bias what counts as best.\nAnalogy: What similar case illuminates this one? Limit: weak analogies hide morally relevant differences.'
-        + '\n\nFallacy / Distortion Watch:\nCheck for straw man, false dilemma, ad hominem, appeal to authority, slippery slope, hasty generalization, confirmation bias, equivocation, red herring, and is/ought confusion. Ask: which one would most distort this situation?'
-        + '\n\nOS1 / OS2 Map:\nOS1: Where is there disagreement about meaning, values, identity, or worldview?\nOS2: What task-level bridge might still allow coordination without pretending full agreement?'
-        + '\n\nAgency-Preserving Next Move:\nName the smallest action that preserves evidence, dignity, relationship, safety, or future agency without requiring false consensus.\n\nContext available: ' + fieldCount + ' field scans, ' + moveCount + ' move cards.';
-    }
-    if(def.id === 'critical-thinking'){
-      return 'Critical Thinking Coach Note\n\nQuestion / Issue:\n' + (input || '[State the question.]') + '\n\nEvidence:\nWhat evidence do I have, and how reliable is it?\n\nAssumptions:\nWhat am I taking for granted?\n\nAlternatives:\nWhat else might explain the situation?\n\nConclusion and Limits:\nWhat can I responsibly conclude now, and what should remain open?';
-    }
-    if(def.id === 'core-traditions'){
-      return 'Core Ethics Traditions Coach Note\n\nDilemma:\n' + (input || '[Describe the dilemma.]') + '\n\nVirtue Ethics: What kind of person or character is called for?\nDeontology: What duty, right, rule, or respect requirement is active?\nConsequentialism: What harms, benefits, and downstream effects matter?\nCare Ethics: Whose vulnerability, relationship, or dependence needs attention?\nSocial Contract / Justice: What fair terms or institutional duties are implicated?\nConstructor / Agency Lens: What redesign would make better action more possible next time?\n\nFunctional Equivalence: Where do different traditions support a similar practical move?';
-    }
-    if(def.id === 'research-project'){
-      return 'Research Project Coach Note\n\nProject / Question:\n' + (input || '[Name the project.]') + '\n\nCentral Contribution:\nWhat is this work trying to make visible or possible?\n\nAudience:\nWho needs this, and what will they need to understand first?\n\nOpen Questions:\nWhat is unclear, under-supported, or still too abstract?\n\nNext Writing / Research Move:\nWhat small section, outline, source check, or capsule should come next?';
-    }
-    return 'EBB Chapter Coach Template Note\n\nChapter Concept:\n' + (input || '[Name the chapter concept or assignment.]') + '\n\nKey Terms:\n[List terms.]\n\nLived Connection:\nHow does this concept connect to experience?\n\nCase Application:\nWhat case or dilemma tests the idea?\n\nField Scan Suggestion:\nWhat environment should be scanned?\n\nMove / Reflection Output:\nWhat should the student produce next?';
+    let text = def.title + ' — Local Coach Note\n\nTask / Situation:\n' + (input || '[No task entered.]') + '\n\nPurpose:\n' + def.purpose + '\n\nSuggested Structure:';
+    (def.steps || []).forEach((step, i) => { text += '\n' + (i+1) + '. ' + step; });
+    text += '\n\nSelected Local Context:\n' + JSON.stringify(ctx, null, 2).slice(0, mode === 'full' ? 7000 : 3000);
+    if(def.id === 'ethical-reasoning') text += '\n\nEthical Reasoning Reminder:\nInclude PRF perspective, other PRFs, deduction, induction, abduction, analogy, fallacy checks, OS1/OS2 distinction, and one agency-preserving next move.';
+    return text;
+  }
+
+  function buildCoachPrompt(def, input, mode, sel){
+    return 'Coach: ' + def.title + '\nMode: ' + mode + '\n\nUser task/situation:\n' + (input || '[No direct prompt entered.]') + '\n\nCoach definition:\n' + JSON.stringify({ purpose:def.purpose, outputs:def.outputs, steps:def.steps }, null, 2) + '\n\nSelected Navigator context:\n' + JSON.stringify(gatherCoachContext(sel), null, 2) + (def.id === 'capability-engine' ? '\n\nCapability Engine guided lessons:\n' + formatCapabilityLessonProgressForText(getCapabilityLessonProgress()) + '\n\nSituation Mapper Input:\n' + JSON.stringify(buildSituationMapperInput(), null, 2) : '');
   }
 
   function summarizeCoachText(text){
