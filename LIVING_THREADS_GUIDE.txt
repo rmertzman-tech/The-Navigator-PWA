@@ -1,0 +1,25 @@
+Navigator v3.3 — Living Threads Guide
+
+Living Threads are ongoing coherence commitments. They are not ordinary tasks or productivity goals.
+
+A thread can hold:
+- a practice such as walking, writing, prayer, music, reading, sleep, or recovery;
+- a Beauty/Awe source such as nature, art, gratitude, sacredness, humor, or wonder;
+- a fear wall or blocked agency threshold;
+- an inquiry in philosophy, science, research, learning, or meaning-making;
+- a relationship, repair, BioBond, or support concern;
+- a career or identity-protection concern.
+
+Suggested test path:
+1. Open Threads.
+2. Create one Practice Thread with title, why it matters, obstacle, small next contact, and one connected coherence signal.
+3. Confirm it appears on Threads and Home.
+4. Edit the thread and save.
+5. Pause it, resume it, and complete it.
+6. Ask Twin about the thread; confirm the Twin input is prefilled and the Twin workspace opens.
+7. Convert the thread into a Move Card; confirm it appears in Moves.
+8. Export JSON and confirm livingThreads appears in the file.
+9. Restore or merge JSON and confirm the thread survives.
+
+Design rule:
+The Twin should remember, invite, and help revise Living Threads. It should not nag, shame, or reduce the user to a checklist.
