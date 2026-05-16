@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — v3.2 Co-Living Twin</title>
-  <meta name="description" content="Navigator v3.2 adds the Co-Living Twin conversation upgrade: maturity-aware dialogue, stance selection, Pulse-aware follow-up, Current Move continuity, Beauty/Awe attention, and dark-coherence caution." />
+  <title>The Navigator — v3.3 Living Threads</title>
+  <meta name="description" content="Navigator v3.3 adds Living Threads: ongoing commitments, questions, practices, fears, relationships, and sources of Beauty/Awe held by the Co-Living Twin across time." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -776,15 +776,47 @@
       .pulse-domain-name { font-size:1rem; }
       .pulse-domain input[type="range"] { min-height:34px; }
     }
+
+
+    /* v3.3 Living Threads */
+    .thread-hero { border: 1px solid rgba(201,168,76,.24); background: rgba(201,168,76,.06); border-radius: 18px; padding: 14px; color: var(--muted); line-height: 1.55; }
+    .thread-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .thread-form-grid .wide { grid-column: 1 / -1; }
+    .thread-type-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .thread-type-card { border: 1px solid var(--border); border-radius: 16px; padding: 12px; background: rgba(255,255,255,.035); color: var(--muted); line-height: 1.4; }
+    .thread-type-card strong { display:block; color: var(--text); margin-bottom: 4px; }
+    .thread-signals { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .thread-signal-check { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:999px; padding:7px 10px; font-size:.82rem; color:var(--muted); background:rgba(255,255,255,.035); }
+    .thread-signal-check input { width:auto; }
+    .thread-list { display:grid; gap:12px; }
+    .thread-card { border: 1px solid var(--border); background: rgba(255,255,255,.035); border-radius: 18px; padding: 14px; }
+    .thread-card.paused { opacity:.72; }
+    .thread-card.completed { opacity:.62; }
+    .thread-card-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:8px; }
+    .thread-title { font-weight:900; color:var(--text); font-size:1.05rem; }
+    .thread-meta { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+    .thread-chip { display:inline-flex; align-items:center; border:1px solid rgba(201,168,76,.28); background:rgba(201,168,76,.08); color:var(--gold); border-radius:999px; padding:4px 8px; font-size:.75rem; font-weight:800; }
+    .thread-card p { margin:7px 0; color:var(--muted); line-height:1.5; }
+    .thread-card strong { color:var(--text); }
+    .thread-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .home-thread-card { border: 1px solid rgba(167,139,250,.28); background: rgba(167,139,250,.06); border-radius: 20px; padding: 16px; margin-top: 16px; }
+    .home-thread-head { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .home-thread-title { font-size:1.05rem; font-weight:900; color:var(--text); }
+    .home-thread-text { color:var(--muted); line-height:1.5; margin:8px 0 0; }
+    .home-thread-row { margin-top:10px; display:grid; gap:8px; }
+    .home-thread-item { border:1px solid var(--border); background:rgba(0,0,0,.12); border-radius:14px; padding:10px; color:var(--muted); }
+    .home-thread-item strong { color:var(--gold); }
+    @media (max-width: 820px){ .thread-form-grid, .thread-type-grid { grid-template-columns:1fr; } .home-thread-head, .thread-card-head { flex-direction:column; } }
+
   </style>
 </head>
 <body>
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator PWA-1.1 · Phone/Laptop Merge Workflow</div>
+        <div class="eyebrow">Navigator v3.3 · Living Threads and Commitment Companionship</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
-        <div class="subtitle">This build makes Navigator installable as a mobile companion while preserving the local-first Twin core: seven-signal Daily Coherence Pulse, Home visibility, offline app-shell caching, and backend calls only when the user explicitly asks for AI help.</div>
+        <div class="subtitle">This build adds Living Threads so the Twin can help hold commitments, practices, fears, inquiries, relationships, and Beauty/Awe sources across time while preserving the local-first PWA workflow.</div>
       </div>
       <div class="status-cluster">
         <span class="pill"><span id="backend-dot" class="dot wait"></span><span id="backend-label">Backend not tested</span></span>
@@ -828,6 +860,7 @@
       <button id="workspace-btn-home" class="workspace-btn active" type="button" onclick="showWorkspace('home')">Home</button>
       <button id="workspace-btn-pulse" class="workspace-btn" type="button" onclick="showWorkspace('pulse')">Pulse</button>
       <button id="workspace-btn-twin" class="workspace-btn" type="button" onclick="showWorkspace('twin')">Twin</button>
+      <button id="workspace-btn-threads" class="workspace-btn" type="button" onclick="showWorkspace('threads')">Threads</button>
       <button id="workspace-btn-memory" class="workspace-btn" type="button" onclick="showWorkspace('memory')">Memory</button>
       <button id="workspace-btn-field" class="workspace-btn" type="button" onclick="showWorkspace('field')">Field Map</button>
       <button id="workspace-btn-moves" class="workspace-btn" type="button" onclick="showWorkspace('moves')">Moves</button>
@@ -845,6 +878,7 @@
         <div class="card-body">
           <div class="workspace-note"><strong>Current design principle:</strong> Navigator should always show where you are in the cycle: understanding self, remembering evidence, mapping fields, assembling context, or choosing a move.</div>
           <div id="home-daily-pulse-card" class="home-pulse-card"></div>
+          <div id="home-living-threads-card" class="home-thread-card"></div>
           <div id="home-dashboard" class="home-dashboard"></div>
           <div id="home-current-move" class="current-move-banner"></div>
           <div id="home-readiness" class="readiness-grid"></div>
@@ -873,6 +907,7 @@
             <button class="btn small primary" type="button" onclick="showWorkspace('twin'); startTwin();">Continue Twin</button>
             <button class="btn small ghost" type="button" onclick="showWorkspace('pulse')">Daily Pulse</button>
             <button class="btn small ghost" type="button" onclick="showWorkspace('memory')">Review Memory</button>
+            <button class="btn small ghost" type="button" onclick="showWorkspace('threads')">Living Threads</button>
             <button class="btn small ghost" type="button" onclick="showWorkspace('field')">Build Field Map</button>
             <button class="btn small purple" type="button" onclick="showWorkspace('moves')">Review Moves</button>
             <button class="btn small ghost" type="button" onclick="exportTwinJournal('json')">Export JSON Backup</button>
@@ -1033,6 +1068,88 @@
             <div class="privacy-note">The Twin should use these as continuity signals, not as verdicts. The user remains the authority on what should become core memory.</div>
           </div>
         </div>
+        </aside>
+      </section>
+    </div>
+
+
+
+    <div id="workspace-threads" class="workspace-pane">
+      <section class="grid workspace-grid">
+        <div class="workspace-stack">
+          <div class="card">
+            <div class="card-header">
+              <div class="eyebrow">Living Threads</div>
+              <div class="card-title">Commitments, questions, fears, practices, and sources of meaning the Twin helps you hold over time.</div>
+              <div class="card-desc">Living Threads are not ordinary tasks. They are ongoing coherence commitments: the things you want the Twin to remember, revisit, protect, and help translate into small agency-preserving moves.</div>
+            </div>
+            <div class="card-body">
+              <div class="thread-hero"><strong>Design rule:</strong> Navigator should not nag or become a generic habit tracker. A Living Thread says: “This matters to my coherence, identity, agency, Beauty/Awe, relationships, inquiry, or career integrity. Help me hold it across time.”</div>
+              <input id="thread-edit-id" type="hidden" />
+              <div class="thread-form-grid" style="margin-top:14px;">
+                <div class="field">
+                  <label for="thread-title-input">Thread title</label>
+                  <input id="thread-title-input" placeholder="Example: Protect morning walks as recovery" />
+                </div>
+                <div class="field">
+                  <label for="thread-type-input">Thread type</label>
+                  <select id="thread-type-input"></select>
+                </div>
+                <div class="field wide">
+                  <label for="thread-why-input">Why this matters</label>
+                  <textarea id="thread-why-input" placeholder="How does this thread support your coherence, future agency, identity, relationships, inquiry, courage, or Beauty/Awe?"></textarea>
+                </div>
+                <div class="field">
+                  <label for="thread-obstacle-input">Current obstacle or pressure</label>
+                  <textarea id="thread-obstacle-input" placeholder="What makes this hard to sustain, face, remember, or protect?"></textarea>
+                </div>
+                <div class="field">
+                  <label for="thread-next-input">Small next contact</label>
+                  <textarea id="thread-next-input" placeholder="What is the smallest realistic way to stay in contact with this thread?"></textarea>
+                </div>
+                <div class="field wide">
+                  <label>Connected coherence signals</label>
+                  <div id="thread-signal-checkboxes" class="thread-signals"></div>
+                </div>
+                <div class="field wide">
+                  <label for="thread-twin-role-input">How the Twin should help</label>
+                  <textarea id="thread-twin-role-input" placeholder="Example: Remind me gently, ask what changed, help me scale down, or help me recognize when fear is becoming a wall."></textarea>
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:12px;">
+                <button id="thread-save-btn" class="btn small primary" type="button" onclick="saveLivingThreadFromForm()">Save Living Thread</button>
+                <button class="btn small ghost" type="button" onclick="clearLivingThreadForm()">Clear Form</button>
+                <button class="btn small purple" type="button" onclick="askTwinAboutThreadsOverview()">Ask Twin About My Threads</button>
+              </div>
+              <div class="privacy-note"><strong>Privacy:</strong> Living Threads are stored locally and included in JSON export/import and merge. They are sent to the backend only when you ask the Twin to discuss them.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div>
+                  <div class="card-title">Open Threads</div>
+                  <div id="summary-livingThreads" class="card-desc">No Living Threads yet.</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="living-threads-list" class="thread-list"></div>
+            </div>
+          </div>
+        </div>
+        <aside class="side-panel">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Thread Types</div>
+              <div class="card-desc">Use these as different ways the Twin can hold continuity with you.</div>
+            </div>
+            <div class="card-body">
+              <div id="living-thread-type-cards" class="thread-type-grid"></div>
+              <div class="privacy-note"><strong>Safety:</strong> Navigator can help reflect on practices, commitments, fears, and questions. It is not medical, psychological, legal, financial, or professional advice.</div>
+            </div>
+          </div>
         </aside>
       </section>
     </div>
@@ -1461,8 +1578,8 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator PWA-1.1 / v3.1.5 — JSON Merge Import</div>
-            <div class="card-desc">This build preserves the complete agency-navigation loop and PWA layer while adding a safer phone/laptop workflow: Restore JSON replaces memory; Merge JSON adds new records from another device without erasing the current long-term memory vault.</div>
+            <div class="card-title">Navigator v3.3 — Living Threads and Commitment Companionship</div>
+            <div class="card-desc">This build preserves the PWA and phone/laptop merge workflow while adding Living Threads: durable, user-approved continuity objects the Twin can revisit, discuss, pause, complete, or translate into Move Cards.</div>
           </div>
           <div class="card-body">
             <div class="help-section">
@@ -1597,7 +1714,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator PWA-1.1 / v3.1.5 — JSON Merge Import.</div>
+            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator v3.3 — Living Threads and Commitment Companionship.</div>
           </div>
         </div>
         </aside>
@@ -1611,9 +1728,9 @@
 (function(){
   'use strict';
 
-  const ENABLE_PWA = true; // PWA-1.1 installable build: cache shell only, never backend AI calls.
+  const ENABLE_PWA = true; // v3.3 PWA build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator v3.2 — Co-Living Twin Conversation Upgrade';
+  const APP_VERSION = 'Navigator v3.3 — Living Threads and Commitment Companionship';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -1638,6 +1755,7 @@
     coherencePulse: 'navigator_twin_v3_coherence_pulse',
     activeCoach: 'navigator_twin_v3_active_coach',
     twinStance: 'navigator_twin_v3_2_twin_stance',
+    livingThreads: 'navigator_twin_v3_3_living_threads',
     uiPanels: 'navigator_twin_v2_ui_panels',
     welcomeDismissed: 'navigator_twin_v2_welcome_dismissed',
     workspace: 'navigator_twin_v2_active_workspace',
@@ -1666,6 +1784,22 @@
     { key:'fear_wall', label:'Fear or blocked agency', prompt:'explore fear as a possible boundary, warning, inherited wall, prediction, or threshold; seek small reversible experiments' },
     { key:'philosophy_science', label:'Philosophy/science explorer', prompt:'connect the user’s lived concern to useful philosophical, scientific, historical, or ethical ideas without turning the response into a lecture' }
   ];
+
+
+
+
+  const LIVING_THREAD_TYPES = [
+    { key:'practice', label:'Practice Thread', desc:'Movement, writing, prayer, reading, sleep, music, craft, or another practice that helps you remain coherent.' },
+    { key:'beauty_awe', label:'Beauty/Awe Thread', desc:'Nature, art, sacredness, gratitude, humor, wonder, creativity, or contact with what makes life larger than pressure.' },
+    { key:'fear_wall', label:'Fear Wall Thread', desc:'A fear, avoided action, blocked agency, shame point, risk, or threshold that may need careful, reversible approach.' },
+    { key:'inquiry', label:'Inquiry Thread', desc:'A philosophical, scientific, research, learning, or meaning-making question the Twin should help keep alive.' },
+    { key:'relationship', label:'Relationship Thread', desc:'A bond, repair, support, family issue, friendship, professional trust, or BioBond that matters to coherence.' },
+    { key:'career_identity', label:'Career / Identity Thread', desc:'Vocation, professional integrity, boundaries, public voice, legacy, role conflict, or identity protection.' }
+  ];
+
+  function getLivingThreadType(key){
+    return LIVING_THREAD_TYPES.find(t => t.key === key) || LIVING_THREAD_TYPES[0];
+  }
 
 
   const COHERENCE_PULSE_DOMAINS = [
@@ -1847,6 +1981,8 @@
   function setCoachNotes(notes){ setStored(KEYS.coachNotes, Array.isArray(notes) ? notes.slice(-80) : []); }
   function getCoherencePulseHistory(){ return getStored(KEYS.coherencePulse, []); }
   function setCoherencePulseHistory(items){ setStored(KEYS.coherencePulse, Array.isArray(items) ? items.slice(-120) : []); }
+  function getLivingThreads(){ return getStored(KEYS.livingThreads, []); }
+  function setLivingThreads(items){ setStored(KEYS.livingThreads, Array.isArray(items) ? items.slice(-80) : []); }
   function getActiveCoachId(){ try { return localStorage.getItem(KEYS.activeCoach) || 'ethical-reasoning'; } catch(e) { return 'ethical-reasoning'; } }
   function setActiveCoachId(id){ try { localStorage.setItem(KEYS.activeCoach, id || 'ethical-reasoning'); } catch(e) {} }
   function getTwinStance(){ try { return localStorage.getItem(KEYS.twinStance) || 'auto'; } catch(e) { return 'auto'; } }
@@ -1965,7 +2101,8 @@
     const moveCount = getMoveCards().length;
     const hasCurrent = !!getCurrentMoveId() || !!getCurrentMovePlan();
     const hasPrf = !!getPrf22Profile();
-    const score = Math.min(6, Math.floor(chatCount / 6)) + journalCount + Math.min(4, pulseCount) + Math.min(3, fieldCount) + Math.min(2, moveCount) + (hasCurrent ? 2 : 0) + (hasPrf ? 1 : 0);
+    const threadCount = getLivingThreads().filter(t => t.status === 'active').length;
+    const score = Math.min(6, Math.floor(chatCount / 6)) + journalCount + Math.min(4, pulseCount) + Math.min(3, fieldCount) + Math.min(2, moveCount) + Math.min(3, threadCount) + (hasCurrent ? 2 : 0) + (hasPrf ? 1 : 0);
     if(score < 5) return { key:'discovery', name:'Discovery', text:'The Twin is still learning first patterns and should ask carefully.' };
     if(score < 14) return { key:'pattern', name:'Pattern Recognition', text:'The Twin can begin noticing repeated themes and tensions.' };
     if(score < 24) return { key:'co_living', name:'Co-Living', text:'The Twin can follow daily life, Pulse signals, fields, plans, and concerns across time.' };
@@ -1983,8 +2120,8 @@
     if(pulse){
       const low = getLowestPulseDomain(pulse.scores || {});
       signals.push({ label:'Latest Pulse', text:(pulse.dateLabel || 'recent') + ': average ' + (Number(pulse.avg || 0).toFixed(1)) + '; lowest signal: ' + low.label + '.' });
-      if(low.key === 'beautyAwe') signals.push({ label:'Beauty/Awe', text:'Beauty/Awe was the lowest recent signal; the Twin should gently reopen contact with meaning, wonder, humor, creativity, or future-pull.' });
-      if(low.key === 'recovery' || low.key === 'physicalEnergy') signals.push({ label:'Capacity caution', text:'Recent capacity is low; the Twin should prefer small, reversible, recovery-preserving moves.' });
+      if(low.key === 'beautyAweMeaning') signals.push({ label:'Beauty/Awe', text:'Beauty/Awe was the lowest recent signal; the Twin should gently reopen contact with meaning, wonder, humor, creativity, or future-pull.' });
+      if(low.key === 'recoveryAccess' || low.key === 'physicalEnergy') signals.push({ label:'Capacity caution', text:'Recent capacity is low; the Twin should prefer small, reversible, recovery-preserving moves.' });
       if(low.key === 'identityIntegrity') signals.push({ label:'Identity protection', text:'Identity Integrity is low; the Twin should ask what must not be sacrificed.' });
     }
     const current = getMoveById(getCurrentMoveId()) || null;
@@ -1996,6 +2133,11 @@
       const recent = fieldScans[fieldScans.length - 1];
       signals.push({ label:'Recent Field', text:(recent.title || recent.environment || 'Field Scan') + ' | risk: ' + (recent.riskLevel || 'unknown') + '; suppression gap: ' + (recent.suppressionGap || 0) });
     }
+    const activeThreads = getLivingThreads().filter(t => t.status === 'active');
+    if(activeThreads.length){
+      const t = activeThreads[activeThreads.length - 1];
+      signals.push({ label:'Living Thread', text:(t.title || 'Thread') + ' | ' + getLivingThreadType(t.type).label + ' | next contact: ' + (t.nextContact || 'not named yet') });
+    }
     const prf = getPrf22Profile();
     if(prf) signals.push({ label:'PRF baseline', text:'A PRF-22 profile is imported; use it as a revisable perception baseline, not a verdict.' });
     const notes = getCoachNotes();
@@ -2004,7 +2146,7 @@
       signals.push({ label:'Recent Coach Note', text:(n.title || n.coachTitle || 'Coach note') + ': ' + String(n.summary || '').slice(0, 120) });
     }
     if(!signals.length) signals.push({ label:'Starting point', text:'No continuity signals yet. The Twin should stay in discovery mode and ask one concrete question.' });
-    return signals.slice(0, 7);
+    return signals.slice(0, 9);
   }
 
   function renderTwinCoLivingControls(){
@@ -2461,7 +2603,7 @@
 
 
 
-  const WORKSPACES = ['home','pulse','twin','memory','field','moves','apps','help'];
+  const WORKSPACES = ['home','pulse','twin','threads','memory','field','moves','apps','help'];
 
   function getActiveWorkspace(){
     try {
@@ -2551,6 +2693,8 @@
     const currentMovePlan = getCurrentMovePlan();
     const prfProfile = getPrf22Profile();
     const coachNotes = getCoachNotes();
+    const livingThreads = getLivingThreads();
+    const activeLivingThreads = livingThreads.filter(t => t.status === 'active');
     const pulseSummary = buildCoherencePulseSummary();
     const planMatchesCurrent = !!(currentMove && currentMovePlan && currentMovePlan.moveId === currentMove.id);
     const nextHint = planMatchesCurrent ? 'Review current move plan' : currentMove ? 'Create current move plan' : moves.length ? 'Compare saved moves' : scans.length ? 'Generate first Move Cards' : 'Create a first Field Scan';
@@ -2564,6 +2708,7 @@
       ['Current Move Plan', planMatchesCurrent ? 'saved' : currentMove ? 'needed' : 'not ready', planMatchesCurrent ? truncateText(currentMovePlan.firstSmallAction || currentMovePlan.whyNow || 'Plan saved', 96) : currentMove ? 'Create a plan from the selected Current Move.' : 'Select a Current Move before planning.'],
       ['Context Assembly', ctx.text ? 'saved' : 'not yet saved', ctx.text ? truncateText(ctx.text, 96) : 'Use Field Map to name the combined situation.'],
       ['Coach Notes', coachNotes.length + ' saved', coachNotes.length ? truncateText((coachNotes[coachNotes.length - 1].title || 'Latest Coach Note'), 96) : 'Open Coaches for critical thinking, ethics, traditions, research, or templates.'],
+      ['Living Threads', activeLivingThreads.length + ' active', livingThreads.length ? truncateText((activeLivingThreads[activeLivingThreads.length - 1] || livingThreads[livingThreads.length - 1]).title || 'Living Thread', 96) : 'Create a thread for a commitment, fear, inquiry, relationship, practice, or source of Beauty/Awe.'],
       ['Largest gap', largest ? largest.suppressionGap : 'none', largest ? truncateText(largest.title || largest.environment || 'Field Scan', 96) : 'No suppression gap mapped yet.'],
       ['Next workspace', moves.length ? 'Moves' : scans.length ? 'Moves / Field' : 'Field Map', nextHint],
       ['Privacy posture', 'local-first', 'Memory remains in this browser unless you export or ask the Twin.']
@@ -2902,6 +3047,7 @@
     editingPulseId = null;
     resetCoherencePulseForm();
     renderCoherencePulse();
+    renderLivingThreads();
     renderWorkspaceDashboard();
     setPulseAfterSaveMessage('<strong>Daily Pulse ' + escapeHtml(action) + '.</strong> Latest average: ' + escapeHtml(String(entry.avg)) + '/5. Lowest signal: ' + escapeHtml(low.label) + '.<div class="quick-actions"><button class="btn small purple" type="button" onclick="askTwinAboutLatestPulse()">Ask Twin About Today</button><button class="btn small ghost" type="button" onclick="createStabilizingMoveFromPulse()">Create Small Stabilizing Move</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'home\')">Return Home</button></div>');
   }
@@ -2940,6 +3086,7 @@
     setCoherencePulseHistory(getCoherencePulseHistory().filter(e => e.id !== id));
     if(editingPulseId === id) editingPulseId = null;
     renderCoherencePulse();
+    renderLivingThreads();
     renderWorkspaceDashboard();
   }
   window.deleteCoherencePulse = deleteCoherencePulse;
@@ -3012,6 +3159,254 @@
     return map[key] || 'Choose one small coherence-preserving action today.';
   }
 
+
+
+  function statusLabelForThread(status){
+    if(status === 'paused') return 'Paused';
+    if(status === 'completed') return 'Completed';
+    return 'Active';
+  }
+
+  function getThreadSignalLabels(keys){
+    const map = new Map(COHERENCE_PULSE_DOMAINS.map(d => [d.key, d.short || d.label]));
+    return (Array.isArray(keys) ? keys : []).map(k => map.get(k) || k).filter(Boolean);
+  }
+
+  function normalizeLivingThread(t){
+    if(!t || typeof t !== 'object') return null;
+    const type = getLivingThreadType(t.type || t.threadType || 'practice').key;
+    const status = ['active','paused','completed'].includes(t.status) ? t.status : 'active';
+    const connectedSignals = Array.isArray(t.connectedSignals) ? t.connectedSignals.filter(k => COHERENCE_PULSE_DOMAINS.some(d => d.key === k)).slice(0,7) : [];
+    const title = String(t.title || 'Living Thread').slice(0, 160).trim();
+    const why = String(t.why || t.whyItMatters || '').slice(0, 1800);
+    const obstacle = String(t.obstacle || t.currentObstacle || '').slice(0, 1600);
+    const nextContact = String(t.nextContact || t.smallNextContact || t.nextMove || '').slice(0, 1600);
+    const twinRole = String(t.twinRole || '').slice(0, 1600);
+    if(!title && !why && !nextContact) return null;
+    return {
+      id: t.id || uid('thread'),
+      title: title || 'Living Thread',
+      type,
+      status,
+      why,
+      obstacle,
+      nextContact,
+      twinRole,
+      connectedSignals,
+      createdAt: t.createdAt || new Date().toISOString(),
+      updatedAt: t.updatedAt || t.createdAt || new Date().toISOString(),
+      lastDiscussedAt: t.lastDiscussedAt || ''
+    };
+  }
+
+  function renderLivingThreadFormOptions(){
+    const sel = document.getElementById('thread-type-input');
+    if(sel && !sel.dataset.ready){
+      sel.innerHTML = LIVING_THREAD_TYPES.map(t => '<option value="' + escapeAttr(t.key) + '">' + escapeHtml(t.label) + '</option>').join('');
+      sel.dataset.ready = 'true';
+    }
+    const checks = document.getElementById('thread-signal-checkboxes');
+    if(checks && !checks.dataset.ready){
+      checks.innerHTML = COHERENCE_PULSE_DOMAINS.map(d => '<label class="thread-signal-check"><input type="checkbox" value="' + escapeAttr(d.key) + '"> ' + escapeHtml(d.short || d.label) + '</label>').join('');
+      checks.dataset.ready = 'true';
+    }
+    const typeCards = document.getElementById('living-thread-type-cards');
+    if(typeCards){
+      typeCards.innerHTML = LIVING_THREAD_TYPES.map(t => '<div class="thread-type-card"><strong>' + escapeHtml(t.label) + '</strong>' + escapeHtml(t.desc) + '</div>').join('');
+    }
+  }
+
+  function clearLivingThreadForm(){
+    const ids = ['thread-edit-id','thread-title-input','thread-why-input','thread-obstacle-input','thread-next-input','thread-twin-role-input'];
+    ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    const type = document.getElementById('thread-type-input');
+    if(type) type.value = 'practice';
+    document.querySelectorAll('#thread-signal-checkboxes input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+    const btn = document.getElementById('thread-save-btn');
+    if(btn) btn.textContent = 'Save Living Thread';
+  }
+  window.clearLivingThreadForm = clearLivingThreadForm;
+
+  function getLivingThreadFormData(){
+    const connectedSignals = Array.from(document.querySelectorAll('#thread-signal-checkboxes input[type="checkbox"]:checked')).map(cb => cb.value);
+    return normalizeLivingThread({
+      id: (document.getElementById('thread-edit-id') || {}).value || '',
+      title: (document.getElementById('thread-title-input') || {}).value || '',
+      type: (document.getElementById('thread-type-input') || {}).value || 'practice',
+      why: (document.getElementById('thread-why-input') || {}).value || '',
+      obstacle: (document.getElementById('thread-obstacle-input') || {}).value || '',
+      nextContact: (document.getElementById('thread-next-input') || {}).value || '',
+      twinRole: (document.getElementById('thread-twin-role-input') || {}).value || '',
+      connectedSignals,
+      status: 'active'
+    });
+  }
+
+  function saveLivingThreadFromForm(){
+    const thread = getLivingThreadFormData();
+    if(!thread || (!thread.title.trim() && !thread.why.trim())){ alert('Add at least a title and why this thread matters.'); return; }
+    const existing = getLivingThreads();
+    const editId = (document.getElementById('thread-edit-id') || {}).value || '';
+    const now = new Date().toISOString();
+    if(editId){
+      const next = existing.map(t => t.id === editId ? Object.assign({}, t, thread, { id:editId, status:t.status || 'active', createdAt:t.createdAt || now, updatedAt:now }) : t);
+      setLivingThreads(next);
+    } else {
+      thread.id = uid('thread');
+      thread.createdAt = now;
+      thread.updatedAt = now;
+      setLivingThreads(existing.concat(thread));
+    }
+    clearLivingThreadForm();
+    renderAll();
+  }
+  window.saveLivingThreadFromForm = saveLivingThreadFromForm;
+
+  function editLivingThread(id){
+    const t = getLivingThreads().find(x => x.id === id);
+    if(!t) return;
+    showWorkspace('threads');
+    renderLivingThreadFormOptions();
+    const set = (id2, val) => { const el = document.getElementById(id2); if(el) el.value = val || ''; };
+    set('thread-edit-id', t.id);
+    set('thread-title-input', t.title);
+    set('thread-type-input', t.type || 'practice');
+    set('thread-why-input', t.why);
+    set('thread-obstacle-input', t.obstacle);
+    set('thread-next-input', t.nextContact);
+    set('thread-twin-role-input', t.twinRole);
+    const sig = new Set(t.connectedSignals || []);
+    document.querySelectorAll('#thread-signal-checkboxes input[type="checkbox"]').forEach(cb => { cb.checked = sig.has(cb.value); });
+    const btn = document.getElementById('thread-save-btn');
+    if(btn) btn.textContent = 'Update Living Thread';
+  }
+  window.editLivingThread = editLivingThread;
+
+  function setLivingThreadStatus(id, status){
+    const now = new Date().toISOString();
+    const next = getLivingThreads().map(t => t.id === id ? Object.assign({}, t, { status, updatedAt:now }) : t);
+    setLivingThreads(next);
+    renderAll();
+  }
+  window.setLivingThreadStatus = setLivingThreadStatus;
+
+  function deleteLivingThread(id){
+    const t = getLivingThreads().find(x => x.id === id);
+    if(!t) return;
+    if(!confirm('Delete this Living Thread: ' + t.title + '?')) return;
+    setLivingThreads(getLivingThreads().filter(x => x.id !== id));
+    renderAll();
+  }
+  window.deleteLivingThread = deleteLivingThread;
+
+  function livingThreadToMoveCard(id){
+    const t = getLivingThreads().find(x => x.id === id);
+    if(!t) return;
+    const type = getLivingThreadType(t.type);
+    const card = {
+      id: uid('move'),
+      fieldScanId: '',
+      fieldTitle: 'Living Thread: ' + t.title,
+      fieldType: type.label,
+      pattern: 'living_thread',
+      title: 'Stay in contact with: ' + t.title,
+      firstAction: t.nextContact || 'Choose one small, reversible contact with this thread today.',
+      whatPreserves: t.why || 'This move preserves coherence by keeping an important commitment, question, fear, relationship, or source of meaning alive over time.',
+      whatRisks: t.obstacle || 'The risk is that pressure, avoidance, fatigue, or dark coherence may cause the thread to disappear from attention.',
+      supportNeeded: t.twinRole || 'Ask the Twin to help scale the next contact to today\'s actual capacity.',
+      timeScale: 'near-term',
+      urgency: 50,
+      reversibility: 75,
+      suppressionRelief: 55,
+      futureAgencyValue: 80,
+      status: 'saved',
+      notes: 'Generated from Living Thread. Connected signals: ' + getThreadSignalLabels(t.connectedSignals).join(', '),
+      createdAt: new Date().toISOString(),
+      savedAt: new Date().toISOString()
+    };
+    setMoveCards(getMoveCards().concat(card));
+    alert('Move Card created from Living Thread. Open Moves to review it.');
+    renderAll();
+  }
+  window.livingThreadToMoveCard = livingThreadToMoveCard;
+
+  function askTwinAboutLivingThread(id){
+    const t = getLivingThreads().find(x => x.id === id);
+    if(!t) return;
+    const now = new Date().toISOString();
+    setLivingThreads(getLivingThreads().map(x => x.id === id ? Object.assign({}, x, { lastDiscussedAt:now, updatedAt:now }) : x));
+    const type = getLivingThreadType(t.type);
+    const prompt = 'Please help me think with this Living Thread: "' + t.title + '". Type: ' + type.label + '. Why it matters: ' + (t.why || '[not yet named]') + '. Obstacle: ' + (t.obstacle || '[not yet named]') + '. Small next contact: ' + (t.nextContact || '[not yet named]') + '. Help me hold this as a coherence commitment, not as a generic task.';
+    const input = document.getElementById('chat-input');
+    showWorkspace('twin');
+    if(input){ input.value = prompt; input.focus(); }
+  }
+  window.askTwinAboutLivingThread = askTwinAboutLivingThread;
+
+  function askTwinAboutThreadsOverview(){
+    const active = getLivingThreads().filter(t => t.status === 'active');
+    const prompt = active.length
+      ? 'Please look across my active Living Threads and help me see which thread most needs attention now, without turning them into a productivity checklist. Help me preserve coherence, Beauty/Awe, future agency, and identity integrity.'
+      : 'I want to create Living Threads. Help me identify one commitment, fear, inquiry, relationship, practice, or source of Beauty/Awe that would be worth holding over time.';
+    showWorkspace('twin');
+    const input = document.getElementById('chat-input');
+    if(input){ input.value = prompt; input.focus(); }
+  }
+  window.askTwinAboutThreadsOverview = askTwinAboutThreadsOverview;
+
+  function renderHomeLivingThreadsCard(){
+    const box = document.getElementById('home-living-threads-card');
+    if(!box) return;
+    const threads = getLivingThreads();
+    const active = threads.filter(t => t.status === 'active');
+    const paused = threads.filter(t => t.status === 'paused');
+    if(!threads.length){
+      box.innerHTML = '<div class="home-thread-head"><div><div class="home-thread-title">Living Threads</div><div class="home-pulse-status">No threads yet</div></div><button class="btn small primary" type="button" onclick="showWorkspace(\'threads\')">Create First Thread</button></div><p class="home-thread-text">Threads let the Twin hold ongoing commitments, fears, questions, relationships, and sources of Beauty/Awe across time.</p>';
+      return;
+    }
+    const rows = active.slice(-3).reverse().map(t => '<div class="home-thread-item"><strong>' + escapeHtml(t.title) + '</strong> · ' + escapeHtml(getLivingThreadType(t.type).label) + '<br>' + escapeHtml(truncateText(t.nextContact || t.why || t.obstacle || 'No next contact named yet.', 110)) + '</div>').join('');
+    box.innerHTML = '<div class="home-thread-head"><div><div class="home-thread-title">Living Threads</div><div class="home-pulse-status">' + active.length + ' active · ' + paused.length + ' paused</div></div><button class="btn small primary" type="button" onclick="showWorkspace(\'threads\')">Review Threads</button></div><p class="home-thread-text">These are the commitments, questions, fears, practices, and sources of meaning your Twin should help hold over time.</p><div class="home-thread-row">' + (rows || '<div class="home-thread-item">No active threads. Review paused or completed threads when ready.</div>') + '</div>';
+  }
+
+  function renderLivingThreads(){
+    renderLivingThreadFormOptions();
+    renderHomeLivingThreadsCard();
+    const threads = getLivingThreads();
+    const active = threads.filter(t => t.status === 'active').length;
+    const paused = threads.filter(t => t.status === 'paused').length;
+    const completed = threads.filter(t => t.status === 'completed').length;
+    setPanelSummary('summary-livingThreads', threads.length ? (active + ' active · ' + paused + ' paused · ' + completed + ' completed') : 'No Living Threads yet. Create one ongoing commitment, fear, inquiry, relationship, practice, or source of meaning.');
+    const list = document.getElementById('living-threads-list');
+    if(!list) return;
+    if(!threads.length){
+      list.innerHTML = '<div class="empty">No Living Threads yet. Create one thread that helps your Twin hold something important across time.</div>';
+      return;
+    }
+    const ordered = threads.slice().sort((a,b) => {
+      const rank = { active:0, paused:1, completed:2 };
+      const ra = rank[a.status] ?? 0, rb = rank[b.status] ?? 0;
+      if(ra !== rb) return ra - rb;
+      return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+    });
+    list.innerHTML = ordered.map(t => {
+      const type = getLivingThreadType(t.type);
+      const signals = getThreadSignalLabels(t.connectedSignals || []);
+      const status = t.status || 'active';
+      const actions = status === 'completed'
+        ? '<button class="btn small ghost" type="button" onclick="setLivingThreadStatus(\'' + escapeAttr(t.id) + '\', \'active\')">Reopen</button>'
+        : status === 'paused'
+          ? '<button class="btn small primary" type="button" onclick="setLivingThreadStatus(\'' + escapeAttr(t.id) + '\', \'active\')">Resume</button><button class="btn small ghost" type="button" onclick="setLivingThreadStatus(\'' + escapeAttr(t.id) + '\', \'completed\')">Complete</button>'
+          : '<button class="btn small ghost" type="button" onclick="setLivingThreadStatus(\'' + escapeAttr(t.id) + '\', \'paused\')">Pause</button><button class="btn small ghost" type="button" onclick="setLivingThreadStatus(\'' + escapeAttr(t.id) + '\', \'completed\')">Complete</button>';
+      return '<div class="thread-card ' + escapeAttr(status) + '"><div class="thread-card-head"><div><div class="thread-title">' + escapeHtml(t.title) + '</div><div class="thread-meta"><span class="thread-chip">' + escapeHtml(type.label) + '</span><span class="thread-chip">' + escapeHtml(statusLabelForThread(status)) + '</span>' + signals.map(s => '<span class="thread-chip">' + escapeHtml(s) + '</span>').join('') + '</div></div><button class="btn small purple" type="button" onclick="askTwinAboutLivingThread(\'' + escapeAttr(t.id) + '\')">Ask Twin</button></div>'
+        + (t.why ? '<p><strong>Why it matters:</strong> ' + escapeHtml(t.why) + '</p>' : '')
+        + (t.obstacle ? '<p><strong>Obstacle:</strong> ' + escapeHtml(t.obstacle) + '</p>' : '')
+        + (t.nextContact ? '<p><strong>Small next contact:</strong> ' + escapeHtml(t.nextContact) + '</p>' : '')
+        + (t.twinRole ? '<p><strong>Twin role:</strong> ' + escapeHtml(t.twinRole) + '</p>' : '')
+        + '<div class="thread-actions"><button class="btn small ghost" type="button" onclick="editLivingThread(\'' + escapeAttr(t.id) + '\')">Edit</button>' + actions + '<button class="btn small ghost" type="button" onclick="livingThreadToMoveCard(\'' + escapeAttr(t.id) + '\')">Make Move Card</button><button class="btn small danger" type="button" onclick="deleteLivingThread(\'' + escapeAttr(t.id) + '\')">Delete</button></div></div>';
+    }).join('');
+  }
+
+
   function renderAll(){
     setTwinMode(getMode());
     const settings = getSettings();
@@ -3031,6 +3426,7 @@
     renderCurrentMovePlan();
     renderCoaches();
     renderCoherencePulse();
+    renderLivingThreads();
     renderWorkspaceDashboard();
     updateSaveStatus();
     applyPanelStates();
@@ -3100,6 +3496,9 @@ A plan may be coherent because it reduces anxiety or stabilizes survival, while 
 Beauty/Awe principle:
 Beauty, awe, meaning, humor, sacredness, creativity, gratitude, nature, music, and wonder are not decorative. They can reopen the field and help the user remain coherent when pressure narrows experience.
 
+Living Threads principle:
+Living Threads are ongoing commitments, questions, fears, practices, relationships, career/identity concerns, or sources of meaning that the user has approved for continuity. Treat them as objects of care, not chores. Do not nag. Remember, invite, help scale down, follow up, and help convert them into small reversible moves when useful.
+
 Response rules:
 - Be warm, specific, humble, and alive to the user’s own concerns.
 - Do not over-summarize.
@@ -3126,6 +3525,7 @@ Essential design principle: The Twin is the coherence core. Coaches, Pulse, Fiel
     const currentMovePlan = getCurrentMovePlan();
     const prf22Profile = getTwinSafePrf22Summary();
     const coachNotes = getCoachNotes().slice(-5).map(n => ({ title:n.title, coachTitle:n.coachTitle, summary:n.summary, createdAt:n.createdAt }));
+    const livingThreads = getLivingThreads().slice(-12).map(t => ({ title:t.title, type:getLivingThreadType(t.type).label, status:t.status, why:t.why, obstacle:t.obstacle, nextContact:t.nextContact, twinRole:t.twinRole, connectedSignals:getThreadSignalLabels(t.connectedSignals), updatedAt:t.updatedAt, lastDiscussedAt:t.lastDiscussedAt }));
     const coherencePulseSummary = buildCoherencePulseSummary();
     const recentCoherencePulse = getCoherencePulseHistory().slice(-7).map(e => ({ dateLabel:e.dateLabel, avg:e.avg, lowestKey:e.lowestKey, lowestLabel:getLowestPulseDomain(e.scores).label, scores:e.scores, note:e.note, relationalNote:e.relationalNote }));
     const least = leastCoveredKeys(3);
@@ -3153,6 +3553,7 @@ Essential design principle: The Twin is the coherence core. Coaches, Pulse, Fiel
       currentMovePlan: currentMovePlan,
       prf22Profile: prf22Profile,
       recentCoachNotes: coachNotes,
+      livingThreads: livingThreads,
       coherencePulseSummary: coherencePulseSummary,
       recentCoherencePulse: recentCoherencePulse,
       instruction: 'Respond as the Co-Living Twin. Vary your conversational form. Use memory and continuity signals when relevant. Do not repeat previous questions. Ask exactly one concrete question. Do not return JSON; return conversational prose.'
@@ -3507,11 +3908,23 @@ Return only valid JSON with this exact shape:
       currentMovePlan: getCurrentMovePlan(),
       prf22Profile: getPrf22Profile(),
       coachNotes: getCoachNotes(),
+      livingThreads: getLivingThreads(),
       coherencePulse: getCoherencePulseHistory(),
       mode: getMode(),
       twinStance: getTwinStance(),
       settings: getSettings()
     };
+  }
+
+
+
+  function formatLivingThreadsForText(threads){
+    if(!Array.isArray(threads) || !threads.length) return '[no Living Threads saved]';
+    return threads.map((t,i) => {
+      const type = getLivingThreadType(t.type);
+      const signals = getThreadSignalLabels(t.connectedSignals || []).join(', ') || 'none named';
+      return (i+1) + '. ' + (t.title || 'Living Thread') + ' [' + type.label + ' | ' + (t.status || 'active') + ']\nWhy it matters: ' + (t.why || '') + '\nObstacle: ' + (t.obstacle || '') + '\nSmall next contact: ' + (t.nextContact || '') + '\nTwin role: ' + (t.twinRole || '') + '\nSignals: ' + signals;
+    }).join('\n\n');
   }
 
   function exportTwinJournal(kind){
@@ -3539,6 +3952,8 @@ Return only valid JSON with this exact shape:
         + formatCurrentMovePlanForText(getCurrentMovePlan())
         + '\n\n--- Move Cards ---\n'
         + getMoveCards().map((m,i) => (i+1) + '. ' + (m.title || 'Move Card') + ' | Field: ' + (m.fieldTitle || 'unknown') + ' | Status: ' + (m.status || 'saved') + '\nFirst action: ' + (m.firstAction || '') + '\nPreserves: ' + (m.whatPreserves || '') + '\nRisks: ' + (m.whatRisks || '')).join('\n\n')
+        + '\n\n--- Living Threads ---\n'
+        + formatLivingThreadsForText(getLivingThreads())
         + '\n\n--- Coach Notes ---\n'
         + getCoachNotes().map((n,i) => (i+1) + '. ' + (n.title || 'Coach Note') + ' [' + (n.coachTitle || n.coachId || 'coach') + ']\n' + (n.summary || '') + '\n' + (n.structuredText || '')).join('\n\n')
         + '\n\n--- Conversation ---\n'
@@ -3665,6 +4080,12 @@ Return only valid JSON with this exact shape:
     };
   }
 
+
+
+  function normalizeImportedLivingThread(t){
+    return normalizeLivingThread(t);
+  }
+
   function validateImportPayload(data){
     if(!data || typeof data !== 'object') throw new Error('The selected file is not a valid Navigator Twin JSON object.');
     const chat = Array.isArray(data.chat) ? data.chat.map(normalizeImportedMessage).filter(m => m.content.trim()) : [];
@@ -3697,9 +4118,10 @@ Return only valid JSON with this exact shape:
     const prf22Profile = normalizeImportedPrf22Profile(data.prf22Profile || data.prfProfile || null, { fromNavigatorBackup:true });
     const coachNotes = Array.isArray(data.coachNotes) ? data.coachNotes.map(normalizeImportedCoachNote).filter(Boolean) : [];
     const coherencePulse = Array.isArray(data.coherencePulse) ? data.coherencePulse.map(normalizeImportedCoherencePulse).filter(Boolean) : [];
-    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
+    const livingThreads = Array.isArray(data.livingThreads) ? data.livingThreads.map(normalizeImportedLivingThread).filter(Boolean) : [];
+    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || prf22Profile || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
     if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
-    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, coherencePulse }; 
+    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, coherencePulse }; 
   }
 
   async function handleImportTwinMemoryFile(event){
@@ -3730,12 +4152,13 @@ Return only valid JSON with this exact shape:
       setCurrentMovePlan(restored.currentMovePlan && (restored.moveCards || []).some(m => m.id === restored.currentMovePlan.moveId) ? restored.currentMovePlan : null);
       setPrf22Profile(restored.prf22Profile || null);
       setCoachNotes(restored.coachNotes || []);
+      setLivingThreads(restored.livingThreads || []);
       setCoherencePulseHistory(restored.coherencePulse || []);
       clearPendingCapsule();
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
-      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '.');
+      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '.');
     } catch(e) {
       alert('Could not import this JSON file: ' + e.message);
       showDebug('IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
@@ -3766,6 +4189,7 @@ Return only valid JSON with this exact shape:
     if(kind === 'move') return [mergeNormalizeText(item.title), mergeNormalizeText(item.firstAction).slice(0, 500)].join('|');
     if(kind === 'coach') return [item.coachId, mergeNormalizeText(item.title), mergeNormalizeText(item.summary).slice(0, 500)].join('|');
     if(kind === 'pulse') return [item.createdAt, JSON.stringify(item.scores || {}), mergeNormalizeText(item.note).slice(0, 200)].join('|');
+    if(kind === 'thread') return [mergeNormalizeText(item.title), item.type, mergeNormalizeText(item.why).slice(0, 300), mergeNormalizeText(item.nextContact).slice(0, 200)].join('|');
     return mergeNormalizeText(JSON.stringify(item).slice(0, 1000));
   }
 
@@ -3843,6 +4267,7 @@ Return only valid JSON with this exact shape:
       moveCards: mergeCollection(getMoveCards(), restored.moveCards, 'move', 80),
       pendingMoveCards: mergeCollection(getPendingMoveCards(), restored.pendingMoveCards, 'move', 8),
       coachNotes: mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80),
+      livingThreads: mergeCollection(getLivingThreads(), restored.livingThreads, 'thread', 80),
       coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120)
     };
     const questions = mergeQuestions(getQuestions(), restored.questions);
@@ -3924,6 +4349,7 @@ Return only valid JSON with this exact shape:
       + mergeStatsLine('Move Cards', c.moveCards)
       + mergeStatsLine('Pending Move drafts', c.pendingMoveCards)
       + mergeStatsLine('Coach Notes', c.coachNotes)
+      + mergeStatsLine('Living Threads', c.livingThreads)
       + mergeStatsLine('Daily Pulse readings', c.coherencePulse)
       + '</ul>'
       + '<p><strong>Preserved by default:</strong> settings and backend URL. PRF profile: ' + escapeHtml(plan.prfAction) + '. Context Assembly: ' + escapeHtml(plan.contextAction) + '. Current Move: ' + escapeHtml(plan.currentMoveAction) + '. Current Move Plan: ' + escapeHtml(plan.currentMovePlanAction) + '.</p>'
@@ -3974,6 +4400,7 @@ Return only valid JSON with this exact shape:
       setCurrentMovePlan(plan.currentMovePlan && (!plan.currentMovePlan.moveId || plan.collections.moveCards.items.some(m => m.id === plan.currentMovePlan.moveId)) ? plan.currentMovePlan : null);
       setPrf22Profile(plan.prf22Profile || null);
       setCoachNotes(plan.collections.coachNotes.items);
+      setLivingThreads(plan.collections.livingThreads.items);
       setCoherencePulseHistory(plan.collections.coherencePulse.items);
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       pendingMergeImportPlan = null;
@@ -5482,6 +5909,7 @@ Return only valid JSON with this shape:
     currentCoachDraft = Object.assign({}, note);
     renderCoaches();
     renderCoherencePulse();
+    renderLivingThreads();
     renderWorkspaceDashboard();
   }
   window.saveCurrentCoachNote = saveCurrentCoachNote;
@@ -5540,6 +5968,7 @@ Return only valid JSON with this shape:
     setCoachNotes(getCoachNotes().filter(n => n.id !== id));
     renderCoaches();
     renderCoherencePulse();
+    renderLivingThreads();
     renderWorkspaceDashboard();
   }
   window.deleteCoachNote = deleteCoachNote;
@@ -5595,12 +6024,17 @@ Return only valid JSON with this shape:
       { id:'demo_pulse_1', createdAt:iso, dateLabel:'Demo 1', scores:{ physicalEnergy:2, temporalHorizon:2, relationalCoherence:3, structuralClarity:2, identityIntegrity:3, recoveryAccess:2, beautyAweMeaning:4 }, avg:2.6, lowestKey:'physicalEnergy', note:'Deadline pressure is narrowing the day, but music and one supportive conversation still help.', relationalNote:'A study partner may also be under the same pressure.', abcThought:ABCD_PULSE_THOUGHTS.physicalEnergy },
       { id:'demo_pulse_2', createdAt:iso, dateLabel:'Demo 2', scores:{ physicalEnergy:3, temporalHorizon:3, relationalCoherence:3, structuralClarity:3, identityIntegrity:4, recoveryAccess:2, beautyAweMeaning:4 }, avg:3.1, lowestKey:'recoveryAccess', note:'A small plan created more clarity, but recovery is still limited.', relationalNote:'', abcThought:ABCD_PULSE_THOUGHTS.recoveryAccess }
     ];
+
+    const livingThreads = [
+      { id:'demo_thread_1', title:'Protect one weekly research block', type:'inquiry', status:'active', why:'This thread protects the user’s future-pull and authorship by keeping meaningful research alive even when institutional demands expand.', obstacle:'Administrative pressure and deadline compression can make the research field disappear from attention.', nextContact:'Before the next research block, ask the Twin to help name the smallest writable section.', twinRole:'Follow up gently; help scale the research move down rather than let it vanish.', connectedSignals:['temporalHorizon','identityIntegrity','beautyAweMeaning'], createdAt:iso, updatedAt:iso, lastDiscussedAt:'' },
+      { id:'demo_thread_2', title:'Keep Beauty/Awe in the week', type:'beauty_awe', status:'active', why:'Beauty/Awe keeps the world larger than the pressure field and prevents coherence from becoming mere endurance.', obstacle:'Stress tends to make beauty feel optional or inefficient.', nextContact:'Take one photo, play one piece of music, or step outside for five minutes before returning to work.', twinRole:'Ask about Beauty/Awe as a real coherence signal, not as decoration.', connectedSignals:['beautyAweMeaning','recoveryAccess'], createdAt:iso, updatedAt:iso, lastDiscussedAt:'' }
+    ];
     const currentMovePlan = { id:'demo_plan_1', moveId:move1, moveTitle:'Clarify assignment scope before acting', field:'Course Deadline Pressure', whyNow:'This move is worth considering now because school pressure is high and ambiguity is pushing the user toward the fastest acceptable output. Clarification may preserve authorship without requiring a major confrontation.', firstSmallAction:'Draft a two-sentence clarification message asking what counts as original contribution and what must be completed first.', supportNeeded:'A study partner or trusted reviewer can check that the message is concise and not over-explained.', riskToWatch:'Watch for pressure to apologize excessively or accept unclear expectations without question.', whatNotToSacrifice:'Do not sacrifice authorship, dignity, or the right to understand the demand before responding.', pauseOrReviseIf:'Pause if the reply creates new risk, if stress spikes, or if a simpler stabilizing action becomes necessary first.', checkBack:'Check back within 24 hours.', status:'draft', createdAt:iso, updatedAt:iso };
-    return { chat, journal, coverage, questions:extractQuestionsFromChat(chat), mode:'twin_asks', documentCapsules:capsules, fieldScans, contextAssembly, moveCards, pendingMoveCards:[], currentMoveId:move1, moveCompareSelection:[move1,move2,move3], moveComparisonLens:'balanced', currentMovePlan, prf22Profile, coachNotes, coherencePulse };
+    return { chat, journal, coverage, questions:extractQuestionsFromChat(chat), mode:'twin_asks', documentCapsules:capsules, fieldScans, contextAssembly, moveCards, pendingMoveCards:[], currentMoveId:move1, moveCompareSelection:[move1,move2,move3], moveComparisonLens:'balanced', currentMovePlan, prf22Profile, coachNotes, livingThreads, coherencePulse };
   }
 
   function loadDemoData(){
-    const existing = getChat().length + getJournal().length + getCapsules().length + getFieldScans().length + getMoveCards().length + getCoachNotes().length + getCoherencePulseHistory().length;
+    const existing = getChat().length + getJournal().length + getCapsules().length + getFieldScans().length + getMoveCards().length + getCoachNotes().length + getLivingThreads().length + getCoherencePulseHistory().length;
     const warning = existing ? 'Load fictional demo data? This will replace the current local Navigator memory in this browser. Export JSON first if you want to keep your current work.' : 'Load fictional demo data into this browser?';
     if(!confirm(warning)) return;
     const demo = buildFictionalDemoData();
@@ -5619,6 +6053,7 @@ Return only valid JSON with this shape:
     setCurrentMovePlan(demo.currentMovePlan);
     setPrf22Profile(demo.prf22Profile || null);
     setCoachNotes(demo.coachNotes || []);
+    setLivingThreads(demo.livingThreads || []);
     setCoherencePulseHistory(demo.coherencePulse || []);
     clearPendingCapsule();
     try { localStorage.setItem(KEYS.mode, demo.mode); localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
@@ -5630,7 +6065,7 @@ Return only valid JSON with this shape:
 
   function clearTwinMemory(){
     if(!confirm('Clear the Twin conversation, journal, PRF-22 profile, capsules, Daily Pulse readings, field scans, context assembly, move cards, coach notes, and comparison selections from this browser?')) return;
-    [KEYS.chat, KEYS.journal, KEYS.coverage, KEYS.questions, KEYS.capsules, KEYS.pendingCapsule, KEYS.fieldScans, KEYS.contextAssembly, KEYS.moveCards, KEYS.pendingMoveCards, KEYS.currentMoveId, KEYS.moveCompareSelection, KEYS.moveComparisonLens, KEYS.currentMovePlan, KEYS.prf22Profile, KEYS.coachNotes, KEYS.coherencePulse, KEYS.lastSaved].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+    [KEYS.chat, KEYS.journal, KEYS.coverage, KEYS.questions, KEYS.capsules, KEYS.pendingCapsule, KEYS.fieldScans, KEYS.contextAssembly, KEYS.moveCards, KEYS.pendingMoveCards, KEYS.currentMoveId, KEYS.moveCompareSelection, KEYS.moveComparisonLens, KEYS.currentMovePlan, KEYS.prf22Profile, KEYS.coachNotes, KEYS.livingThreads, KEYS.coherencePulse, KEYS.lastSaved].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
     renderAll();
   }
   window.clearTwinMemory = clearTwinMemory;
