@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — v3.5 Capability Engine Guided Introduction</title>
-  <meta name="description" content="Navigator v3.5 adds a five-lesson Capability Engine Guided Introduction with progress tracking, Learn/Reflect/Apply lesson cards, and Navigator action bridges." />
+  <title>The Navigator — v3.5.1 EBB Capability Coach Content Patch</title>
+  <meta name="description" content="Navigator v3.5.1 applies EBB Capability Coach content and usability improvements while preserving the guided introduction, PWA workflow, and merge import." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -814,9 +814,9 @@
   <main class="app-shell">
     <div class="topbar">
       <div>
-        <div class="eyebrow">Navigator v3.5 · Capability Engine Guided Introduction</div>
+        <div class="eyebrow">Navigator v3.5.1 · EBB Capability Coach Content Patch</div>
         <h1>The Twin that becomes coherent by learning from you.</h1>
-        <div class="subtitle">This build adds a student-facing Capability Engine Guided Introduction: five Learn / Reflect / Apply lessons, progress tracking, Coach Note creation, and bridges into Pulse, Field Scans, Living Threads, Move Cards, and Twin conversation while preserving the local-first PWA workflow.</div>
+        <div class="subtitle">This build refines the Capability Engine Coach for EBB use: Franklin is reframed as structural racism/consequentialism, Reflect prompts remain visible, Lesson 3 includes a clinical-boundary note, Challenger defaults to established evidence, and the case list now prioritizes course cases.</div>
       </div>
       <div class="status-cluster">
         <span class="pill"><span id="backend-dot" class="dot wait"></span><span id="backend-label">Backend not tested</span></span>
@@ -1578,8 +1578,8 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator v3.5 — Capability Engine Guided Introduction</div>
-            <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, and Co-Living Twin behavior while adding a five-lesson Capability Engine Guided Introduction: agency as capability, the Three Freedoms, survival compression, OS2 bridges, and action conversion.</div>
+            <div class="card-title">Navigator v3.5.1 — EBB Capability Coach Content Patch</div>
+            <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, Co-Living Twin behavior, and the five-lesson Capability Engine Guided Introduction while adding EBB content and usability refinements.</div>
           </div>
           <div class="card-body">
             <div class="help-section">
@@ -1714,7 +1714,7 @@
               <label for="backend-url">Backend proxy endpoint</label>
               <input id="backend-url" type="text" value="https://ucp-backend-4dig.onrender.com/api/claude-proxy" onchange="saveBackendUrl(this.value)" />
             </div>
-            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator v3.5 — Capability Engine Guided Introduction.</div>
+            <div class="privacy-note">PWA build: service worker caches the app shell only. Backend/API calls and raw uploads are not cached. Version: Navigator v3.5.1 — EBB Capability Coach Content Patch.</div>
           </div>
         </div>
         </aside>
@@ -1730,7 +1730,7 @@
 
   const ENABLE_PWA = true; // v3.5 PWA build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator v3.5 — Capability Engine Guided Introduction';
+  const APP_VERSION = 'Navigator v3.5.1 — EBB Capability Coach Content Patch';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -5735,13 +5735,13 @@ Return only valid JSON with this shape:
   function getCoachDef(id){ return COACH_DEFS.find(c => c.id === id) || COACH_DEFS[1]; }
 
   const EBB_CASES = {
-    custom:{ title:'My own situation', prompt:'I want to examine a real situation in my life where my agency feels constrained. I need to map the three freedoms, identify the formal status of my claims, and prepare a situation-mapper input for future simulation.', movement:3, refusal:3, redesign:3, stress:'moderate', suppression:'moderate', biobond:'unknown', os2:'possible' },
-    challenger:{ title:'Boisjoly / Challenger', prompt:'Use the Boisjoly / Challenger case to examine how an authority-weighted institutional architecture can suppress empirical evidence, narrow refusal/dissent freedom, and create a high suppression gap under launch pressure.', movement:2, refusal:1, redesign:1, stress:'high', suppression:'high', biobond:'fragile', os2:'fragile' },
+    challenger:{ title:'Boisjoly / Challenger', prompt:'Use the Boisjoly / Challenger case to examine how an authority-weighted institutional architecture can suppress empirical engineering evidence, narrow refusal/dissent freedom, and create a high suppression gap under launch pressure.', movement:2, refusal:1, redesign:1, stress:'high', suppression:'high', biobond:'fragile', os2:'fragile' },
     hanna:{ title:'Hanna / Captivity', prompt:'Use the Hanna captivity case to examine how coercive conditions restrict movement freedom while sacred-boundary and relational coherence may preserve identity integrity under extreme pressure.', movement:0, refusal:2, redesign:1, stress:'extreme', suppression:'high', biobond:'partial', os2:'fragile' },
-    franklin:{ title:'Franklin / Practical Wisdom', prompt:'Use Franklin as a case for examining disciplined self-formation, civic capability, iterative practice, and the redesign of personal and social routines across time.', movement:4, refusal:3, redesign:4, stress:'moderate', suppression:'low', biobond:'strong', os2:'strong' },
-    maathai:{ title:'Maathai / Green Belt Movement', prompt:'Use Wangari Maathai and the Green Belt Movement to examine how ecological repair, women\'s agency, local action, and functional equivalence can create OS2 bridges across different communities and institutions.', movement:3, refusal:4, redesign:5, stress:'high', suppression:'moderate', biobond:'strong', os2:'strong' },
-    ai_pressure:{ title:'AI / Student Deadline Pressure', prompt:'Use a student deadline-pressure case to examine survival compression, performance pressure, AI-button temptation, reduced temporal horizon, and the difference between academic dishonesty as a rule violation and agency suppression as a field condition.', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate', biobond:'low', os2:'possible' },
-    workplace:{ title:'Workplace / Moral Stress', prompt:'Use a workplace moral-stress case to examine the difference between personal failure and institutional suppression, focusing on documentation, dissent, boundary-setting, BioBond support, and career/identity protection.', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate_high', biobond:'partial', os2:'possible' }
+    franklin:{ title:'Franklin / Structural Racism', prompt:'Use the Franklin / Structural Racism case to examine how institutional racism creates downstream harms over decades that no individual-act analysis can fully account for. Consequentialism's strength and limitation become visible through one historian's life and work.', movement:2, refusal:2, redesign:3, stress:'high', suppression:'high', biobond:'partial', os2:'possible' },
+    maathai:{ title:'Maathai / Green Belt Movement', prompt:'Use Wangari Maathai and the Green Belt Movement to examine how ecological repair, women's agency, local action, and functional equivalence can create OS2 bridges across different communities and institutions.', movement:3, refusal:4, redesign:5, stress:'high', suppression:'moderate', biobond:'strong', os2:'strong' },
+    ai_pressure:{ title:'AI / Student Deadline Pressure', prompt:'Use a student deadline-pressure case to examine how academic institutions create conditions of survival compression — where grades, time pressure, financial consequences, and fear of failure can narrow the field of possible action. Examine the difference between academic dishonesty as a rule violation and the institutional conditions that generate pressure toward it. What does the three-freedoms framework reveal about what the student and the institution are each responsible for?', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate', biobond:'low', os2:'possible' },
+    workplace:{ title:'Workplace / Moral Stress', prompt:'Use a workplace moral-stress case to examine the difference between personal failure and institutional suppression, focusing on documentation, dissent, boundary-setting, BioBond support, and career/identity protection.', movement:2, refusal:2, redesign:2, stress:'high', suppression:'moderate_high', biobond:'partial', os2:'possible' },
+    custom:{ title:'My own situation', prompt:'I want to examine a real situation in my life where my agency feels constrained. I need to map the three freedoms, identify the formal status of my claims, and prepare a situation-mapper input for future simulation.', movement:3, refusal:3, redesign:3, stress:'moderate', suppression:'moderate', biobond:'unknown', os2:'possible' }
   };
 
   function shouldShowCapabilityEbbPanel(id){ return id === 'capability-engine' || id === 'ebb-chapter-template'; }
@@ -5775,7 +5775,7 @@ Return only valid JSON with this shape:
       id:'stress-compression',
       title:'3. Stress, Survival Compression, and Dark Coherence',
       shortTitle:'Stress and dark coherence',
-      learn:'Stress can narrow the field of possible action. Survival compression occurs when short-term safety, grades, money, approval, or threat become so dominant that the person can no longer easily access their wider values. Dark coherence names a pattern that may feel stable because it keeps the system going, but does so by shrinking agency, beauty, relationship, truth, or future possibility.',
+      learn:'Note: This lesson uses educational framing to understand institutional pressure on agency. It is not a mental health assessment, a diagnostic instrument, or therapeutic guidance. If you are experiencing significant distress, please speak with a counselor or trusted person.\n\nStress can narrow the field of possible action. Survival compression occurs when short-term safety, grades, money, approval, or threat become so dominant that the person can no longer easily access their wider values. Dark coherence names a pattern that may feel stable because it keeps the system going, but does so by shrinking agency, beauty, relationship, truth, or future possibility.',
       reflect:'Where do you become more automatic, defensive, avoidant, or compliant under pressure? What does your Daily Pulse or recent life pattern suggest may be narrowing?',
       apply:'Save a Daily Pulse, then ask the Twin to interpret it cautiously. Consider creating a Fear Wall or Practice Living Thread.',
       prompt:'Help me examine whether stress or survival compression is narrowing my agency. Please treat this carefully, not clinically. Connect it to Pulse signals, possible dark coherence, and one agency-preserving action.'
@@ -5830,7 +5830,7 @@ Return only valid JSON with this shape:
             + '<div class="coach-layout">'
             + '<div><div class="guided-card"><div class="guided-card-title">Learn</div><div class="guided-card-text">' + escapeHtml(l.learn) + '</div></div>'
             + '<div class="guided-card"><div class="guided-card-title">Apply</div><div class="guided-card-text">' + escapeHtml(l.apply) + '</div></div></div>'
-            + '<div><div class="field"><label for="cap-lesson-reflection-' + l.id + '">Reflect</label><textarea id="cap-lesson-reflection-' + l.id + '" placeholder="' + escapeAttr(l.reflect) + '">' + escapeHtml(reflections[l.id] || '') + '</textarea></div>'
+            + '<div><div class="field"><label for="cap-lesson-reflection-' + l.id + '">Reflect</label><div class="privacy-note"><strong>Prompt:</strong> ' + escapeHtml(l.reflect) + '</div><textarea id="cap-lesson-reflection-' + l.id + '" placeholder="Write your reflection here. The prompt remains visible above while you answer.">' + escapeHtml(reflections[l.id] || '') + '</textarea></div>'
             + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="saveCapabilityLessonReflection(\'' + l.id + '\')">Save Reflection</button><button class="btn small primary" type="button" onclick="completeCapabilityLesson(\'' + l.id + '\')">Mark Complete</button><button class="btn small ghost" type="button" onclick="useCapabilityLessonPrompt(\'' + l.id + '\')">Load Prompt</button><button class="btn small ghost" type="button" onclick="saveCapabilityLessonAsCoachNote(\'' + l.id + '\')">Save Coach Note</button><button class="btn small purple" type="button" onclick="askTwinAboutCapabilityLesson(\'' + l.id + '\')">Ask Twin</button></div>'
             + '</div></div></div></details>';
         }).join('')
@@ -5921,7 +5921,7 @@ Return only valid JSON with this shape:
       + '<div class="field"><label for="ebb-case-select">EBB case connector</label><select id="ebb-case-select" onchange="applyCapabilityEbbCase(this.value)">'
       + Object.keys(EBB_CASES).map(k => '<option value="' + k + '">' + escapeHtml(EBB_CASES[k].title) + '</option>').join('')
       + '</select></div>'
-      + '<div class="field"><label for="ebb-status-claim">Guided status-map practice: name one claim</label><textarea id="ebb-status-claim" placeholder="Example: Chronic stress can narrow deliberative capacity; or cellular competence is a useful analogy for distributed agency."></textarea></div>'
+      + '<div class="field"><label for="ebb-status-claim">Guided status-map practice: name one claim</label><textarea id="ebb-status-claim" placeholder="Example: Chronic stress can narrow deliberative capacity; or cellular competence is a useful analogy for distributed agency.">' + escapeHtml('The Thiokol/NASA decision architecture down-weighted empirical engineering evidence under authority and schedule pressure.') + '</textarea></div>'
       + '<div class="field"><label for="ebb-status-type">Classify that claim</label><select id="ebb-status-type">'
       + '<option value="Established / well-supported evidence">Established / well-supported evidence</option>'
       + '<option value="Formal analogy or modeling hypothesis">Formal analogy or modeling hypothesis</option>'
@@ -5931,15 +5931,15 @@ Return only valid JSON with this shape:
       + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="generateSituationMapperPreview()">Preview Situation Mapper Input</button><button class="btn small ghost" type="button" onclick="appendSituationMapperToCoachInput()">Append to Prompt</button></div>'
       + '</div><div>'
       + '<div class="field"><label>Three Capability Freedoms</label><div class="coach-context-grid">'
-      + '<label>Movement / Exit <select id="ebb-movement-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
-      + '<label>Refusal / Dissent <select id="ebb-refusal-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
-      + '<label>Redesign / Reconfiguration <select id="ebb-redesign-score" onchange="updateCapabilityContinuation()">' + scoreOptions(3) + '</select></label>'
+      + '<label>Movement / Exit <select id="ebb-movement-score" onchange="updateCapabilityContinuation()">' + scoreOptions(EBB_CASES.challenger.movement) + '</select></label>'
+      + '<label>Refusal / Dissent <select id="ebb-refusal-score" onchange="updateCapabilityContinuation()">' + scoreOptions(EBB_CASES.challenger.refusal) + '</select></label>'
+      + '<label>Redesign / Reconfiguration <select id="ebb-redesign-score" onchange="updateCapabilityContinuation()">' + scoreOptions(EBB_CASES.challenger.redesign) + '</select></label>'
       + '</div></div>'
       + '<div class="field"><label>Simulation-relevant field signals</label><div class="coach-context-grid">'
-      + '<label>Stress load <select id="ebb-stress-select"><option value="low">low</option><option value="moderate" selected>moderate</option><option value="high">high</option><option value="extreme">extreme</option></select></label>'
-      + '<label>Suppression gap <select id="ebb-suppression-select"><option value="low">low</option><option value="moderate" selected>moderate</option><option value="moderate_high">moderate-high</option><option value="high">high</option></select></label>'
-      + '<label>BioBond support <select id="ebb-biobond-select"><option value="low">low</option><option value="partial">partial</option><option value="fragile">fragile</option><option value="strong">strong</option><option value="unknown" selected>unknown</option></select></label>'
-      + '<label>OS2 bridge potential <select id="ebb-os2-select"><option value="low">low</option><option value="fragile">fragile</option><option value="possible" selected>possible</option><option value="strong">strong</option></select></label>'
+      + '<label>Stress load <select id="ebb-stress-select"><option value="low">low</option><option value="moderate">moderate</option><option value="high" selected>high</option><option value="extreme">extreme</option></select></label>'
+      + '<label>Suppression gap <select id="ebb-suppression-select"><option value="low">low</option><option value="moderate">moderate</option><option value="moderate_high">moderate-high</option><option value="high" selected>high</option></select></label>'
+      + '<label>BioBond support <select id="ebb-biobond-select"><option value="low">low</option><option value="partial">partial</option><option value="fragile" selected>fragile</option><option value="strong">strong</option><option value="unknown">unknown</option></select></label>'
+      + '<label>OS2 bridge potential <select id="ebb-os2-select"><option value="low">low</option><option value="fragile" selected>fragile</option><option value="possible">possible</option><option value="strong">strong</option></select></label>'
       + '</div></div>'
       + '<div id="ebb-continuation-question" class="privacy-note"></div>'
       + '<pre id="ebb-sim-output" class="coach-output" style="max-height:220px;white-space:pre-wrap;">Situation Mapper preview will appear here.</pre>'
@@ -5960,7 +5960,7 @@ Return only valid JSON with this shape:
     setElValue('ebb-biobond-select', c.biobond);
     setElValue('ebb-os2-select', c.os2);
     setElValue('ebb-status-claim', caseId === 'challenger' ? 'The Thiokol/NASA decision architecture down-weighted empirical engineering evidence under authority and schedule pressure.' : caseId === 'maathai' ? 'Tree planting can function as an OS2 bridge because different communities may support the same capability without sharing the same ultimate worldview.' : 'This situation can be mapped by distinguishing evidence, formal analogy, metaphor, and user-specific inference.');
-    setElValue('ebb-status-type', caseId === 'maathai' ? 'Formal analogy or modeling hypothesis' : 'User-specific Navigator inference');
+    setElValue('ebb-status-type', caseId === 'challenger' ? 'Established / well-supported evidence' : caseId === 'maathai' ? 'Formal analogy or modeling hypothesis' : 'User-specific Navigator inference');
     updateCapabilityContinuation();
     generateSituationMapperPreview();
   }
@@ -6095,7 +6095,7 @@ Return only valid JSON with this shape:
       return 'This coach helps turn a project into a map: central problem, contribution, audience, missing evidence, next section, and next research move. It is useful with Document Capsules and PRF profile context.';
     }
     if(id === 'capability-engine'){
-      return 'This coach translates the Capability Engine into Navigator practice and EBB classroom use. It treats agency as a capability distributed across body, meaning, field, relationships, and social affordances. The v3.5 guided introduction adds five Learn / Reflect / Apply lessons so students can learn the vocabulary before using the analysis panel: agency as capability, the Three Freedoms, stress and dark coherence, functional equivalence and OS2 bridges, and moving from coherence to action. It does not make medical, therapeutic, or diagnostic claims.';
+      return 'This coach translates the Capability Engine into Navigator practice and EBB classroom use. It treats agency as a capability distributed across body, meaning, field, relationships, and social affordances. The v3.5.1 guided introduction adds five Learn / Reflect / Apply lessons so students can learn the vocabulary before using the analysis panel: agency as capability, the Three Freedoms, stress and dark coherence, functional equivalence and OS2 bridges, and moving from coherence to action. It does not make medical, therapeutic, or diagnostic claims.';
     }
     return 'This template is a placeholder for future EBB chapter-specific coaches. It gives the structure of a chapter coach without loading the full curriculum yet.';
   }
