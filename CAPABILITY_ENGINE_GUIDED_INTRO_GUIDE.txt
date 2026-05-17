@@ -1,0 +1,40 @@
+Navigator v3.5 — Capability Engine Guided Introduction
+
+Purpose
+This build gives the Capability Engine Coach a true guided introduction rather than only an advanced analysis panel. It teaches the user the vocabulary before asking them to apply it.
+
+What was added
+1. Five Learn / Reflect / Apply lessons:
+   - Agency Is a Capability, Not Just a Trait
+   - The Three Freedoms and Your Field
+   - Stress, Survival Compression, and Dark Coherence
+   - Functional Equivalence and OS2 Bridges
+   - From Coherence to Action
+
+2. Local lesson progress tracking:
+   - Completed lessons are stored locally.
+   - Reflections are stored locally.
+   - Progress is included in JSON export/import/merge.
+
+3. Action bridges:
+   - Save Reflection
+   - Mark Complete
+   - Load Prompt into the Coach Session Arena
+   - Save Coach Note
+   - Ask Twin about the lesson
+
+4. Coach stability repair:
+   - The local Coach Note builder now has explicit local structured-output functions.
+   - The AI-assisted Coach prompt no longer uses undefined variables in the system prompt.
+
+Suggested tests
+1. Open Applications & Coaches.
+2. Open Capability Engine Coach.
+3. Confirm the Guided Introduction appears above the EBB Capability Practice panel.
+4. Write a reflection in Lesson 1 and click Save Reflection.
+5. Confirm the reflection persists after refresh.
+6. Mark Lesson 1 complete and confirm the progress bar updates.
+7. Use Load Prompt and confirm the prompt appears in the Coach Session Arena.
+8. Click Build Local Coach Note and confirm the output includes guided lesson progress and Situation Mapper content.
+9. Save a lesson as Coach Note and confirm it appears under Saved Coach Notes.
+10. Export JSON, restore or merge it in another browser/device, and confirm guided lesson progress is retained.
