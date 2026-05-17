@@ -2,7 +2,7 @@
   "id": "./",
   "name": "The Navigator",
   "short_name": "Navigator",
-  "description": "A local-first AI-supported agency navigation companion with Daily Coherence Pulse, Twin reflection, Field Maps, Move Cards, and Coaches.",
+  "description": "A local-first AI-supported agency navigation companion with Co-Living Twin conversation, EBB-refined Capability Engine Guided Introduction, Daily Coherence Pulse, Field Maps, Move Cards, Coaches, and JSON Merge Import.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -50,6 +50,18 @@
       "short_name": "Twin",
       "description": "Open the Twin conversation.",
       "url": "./#twin",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Capability Engine Coach",
+      "short_name": "Capability",
+      "description": "Open Navigator to use the Capability Engine Coach.",
+      "url": "./#coaches",
       "icons": [
         {
           "src": "./icons/icon-192.png",
