@@ -1,7 +1,7 @@
-/* Navigator PWA-1 Service Worker
+/* Navigator v3.5.1 Service Worker
    Cache policy: app shell only. Never cache backend AI/API responses or raw uploads.
 */
-const CACHE_NAME = 'navigator-pwa-1-v3-2-0-shell';
+const CACHE_NAME = 'navigator-v3-5-1-ebb-capability-content-patch-shell';
 const APP_SHELL = [
   './',
   './index.html',
