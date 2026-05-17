@@ -1,34 +1,19 @@
-Navigator PWA-1 Release Notes
+Navigator v3.5.1 — EBB Capability Coach Content Patch
 
-Version: Navigator PWA-1 — Installable Mobile Companion Build
-Base: Navigator Twin v3.1.4 — Pulse Click Handler Patch
+This release is a focused content/usability patch on top of Navigator v3.5.
 
-Adds:
-- manifest.json
-- sw.js
-- PWA icons
-- installable app shell
-- offline shell caching
-- PWA status indicator
-- PWA cache/service-worker clearing control
-- updated privacy and release language
+Added/refined:
+- Franklin / Structural Racism case framing for EBB consequentialism and long-arc institutional harm analysis.
+- Franklin default scores: movement 2, refusal 2, redesign 3, stress high, suppression high.
+- Persistent Reflect prompts in the Guided Introduction.
+- Lesson 3 educational/non-clinical disclaimer.
+- Challenger default status type: Established / well-supported evidence.
+- AI / Student Deadline Pressure prompt rewritten to avoid casual language and foreground survival compression, academic integrity, and institutional responsibility.
+- Case dropdown order: Challenger, Hanna, Franklin, Maathai, AI Deadline Pressure, Workplace Moral Stress, My own situation.
 
-Preserves:
-- Twin conversation
-- Daily Coherence Pulse
-- PRF-22 import
-- Document Capsules
-- Field Scans
-- Field Map Dashboard
-- Context Assembly
-- Move Cards
-- Cross-Field Move Comparison
-- Current Move Plan
-- Applications & Coaches
-- JSON/TXT export/import
+Not added:
+- No weekly class timing notices were added, so this build remains flexible for changing Fall course schedules and non-course use.
 
-PWA safety rules:
-- cache app shell only
-- never cache backend AI/API responses
-- never cache raw uploaded documents
-- keep local-first memory and JSON backup controls visible
+PWA notes:
+- Service worker cache name updated to navigator-v3-5-1-ebb-capability-content-patch-shell.
+- If an older build appears, use Navigator Help → Clear PWA cache / unregister service worker, then reload.
