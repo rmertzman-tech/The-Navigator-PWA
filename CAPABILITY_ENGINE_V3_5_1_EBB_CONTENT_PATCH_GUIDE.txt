@@ -1,0 +1,22 @@
+Navigator v3.5.1 — EBB Capability Coach Content Patch Guide
+
+Suggested test path:
+
+1. Open Applications & Coaches.
+2. Open Capability Engine Coach.
+3. Confirm the Guided Introduction appears.
+4. Open Lesson 1 and confirm the Reflect prompt remains visible above the textarea while typing.
+5. Open Lesson 3 and confirm the educational/non-clinical disclaimer appears at the beginning of Learn.
+6. In the EBB Capability Practice panel, confirm the case dropdown order begins with:
+   - Boisjoly / Challenger
+   - Hanna / Captivity
+   - Franklin / Structural Racism
+   - Maathai / Green Belt Movement
+7. Select Boisjoly / Challenger and confirm status type is Established / well-supported evidence.
+8. Select Franklin / Structural Racism and confirm scores are movement 2, refusal 2, redesign 3, stress high, suppression high.
+9. Select AI / Student Deadline Pressure and confirm the prompt does not use the phrase AI-button temptation.
+10. Generate Situation Mapper Input and confirm the lowest-freedom continuation question updates.
+11. Save a guided lesson reflection, export JSON, restore or merge JSON, and confirm the reflection persists.
+
+Design note:
+This build intentionally does not add weekly class notices. It is suitable for Fall EBB use but remains flexible for changing teaching schedules and general Navigator users.
